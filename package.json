@@ -1,0 +1,16 @@
+{
+  "name": "ezsec",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "author": "dhanush patel",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.1",
+    "request": "^2.83.0"
+  }
+}
