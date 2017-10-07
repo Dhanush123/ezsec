@@ -55,8 +55,9 @@ function orgsList(){
     if (!error && response.statusCode == 200) {
       var orgs = JSON.parse(body);
       var msg = "You are in the following organizations:\n"
-      for x in orgs:
+      for (var x in orgs) {
         msg += x.name + "\n"
+      }
       gRes.json(msg);
     }
   }
