@@ -7,7 +7,8 @@ const request = require("request");
 const restService = express();
 restService.use(bodyParser.json());
 
-gRes = null
+gRes = null;
+console.log("gRes1",gRes);
 
 var options = {
   headers: {
@@ -19,7 +20,7 @@ restService.post("/", function (req, res) {
   console.log("hook request");
   try {
       if (req.body) {
-          gRes = res
+          gRes = res;
           var requestBody = req.body;
           if (requestBody.result) {
             actOnAction(requestBody.result.action, requestBody);
@@ -58,10 +59,15 @@ function orgsList(){
       for (var x in orgs) {
         msg += x.name + "\n"
       }
+      console.log("gRes2",gRes);
       gRes.json(msg);
     }
   }
   request(options, callback);
+}
+
+function alertsList() {
+
 }
 
 restService.listen((process.env.PORT || 8000), function () {
