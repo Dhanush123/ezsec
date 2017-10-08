@@ -16,7 +16,6 @@
     "jsonic": "^0.3.0",
     "tempmail.js": "^0.2.1",
     "axios": "^0.16.2",
-    "delay": "^2.0.0",
-    "p-min-delay": "^2.0.0"
+    "p-each-series": "^1.0.0"
   }
 }

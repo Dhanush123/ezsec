@@ -5,8 +5,7 @@ const bodyParser = require("body-parser");
 const request = require("request");
 var TempMail = require("tempmail.js");
 
-const delay = require('delay');
-const pMinDelay = require('p-min-delay');
+const pEachSeries = require('p-each-series');
 
 var tmpEmail = "juyahevah@p33.org";
 var account = new TempMail(tmpEmail);
@@ -247,6 +246,8 @@ function topTraffic(res, params) {
 function dataUsage(res, params) {
   let network_id = 'N_646829496481140676';
   let hours = params.hours.amount;
+  var queue = new Queue(2, Infinity);
+
   dashboard_client
     .get(`/networks/${network_id}/devices`)
     .then(res => res.data)
@@ -257,11 +258,7 @@ function dataUsage(res, params) {
     .then(serials => {
       var seconds = hours * 60 * 60;
       console.log('serial');
-      var promise_array = serials.map(serial => {
-        console.log(serial);
-        return pMinDelay(dashboard_client.get(`/devices/${serial}/clients?timespan=${seconds}`), 500)
-      })
-      return Promise.all(promise_array);
+      return pEachSeries(serials, cereal => dashboard_client.get(`/devices/${cereal}/clients?timespan=${seconds}`).then(res => res.data))
     })
     .then(raw_results => {
       console.log(raw_results);
@@ -301,6 +298,8 @@ function dataUsage(res, params) {
       })
     })
 }
+
+// function updateRules(res)
 
 restService.listen((process.env.PORT || 8000), function () {
   console.log("Server listening");
