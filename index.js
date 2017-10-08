@@ -257,15 +257,11 @@ function dataUsage(res, params) {
     .then(serials => {
       var seconds = hours * 60 * 60;
       console.log('serial');
-      return Promise.all(serials.map(serial => {
-        return pMinDelay(dashboard_client.get(`/devices/${serial}/clients?timespan=${seconds}`), 500)
-          .then(res => {
-            console.log(Object.keys(res))
-            return res.data
-          })
-      }));
+      var promise_array = serials.map(serial => pMinDelay(dashboard_client.get(`/devices/${serial}/clients?timespan=${seconds}`), 500))
+      return Promise.all(promise_array);
     })
     .then(raw_results => {
+      console.log(raw_results);
       console.log('raw');
       return raw_results.map(rres => {
         return {
