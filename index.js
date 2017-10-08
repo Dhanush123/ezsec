@@ -66,8 +66,7 @@ function orgsList(){
       console.log("orgsList msg",msg);
       return gRes.json({
         speech: msg,
-        displayText: msg,
-        source: 'dhanush-quakey'
+        displayText: msg
       });
     }
   }
