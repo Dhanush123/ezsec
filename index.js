@@ -210,8 +210,9 @@ function topTraffic(res, params) {
         }
         else {
           for (var i = 0; i < top_traffic.length; i++){
-            if (x.activeTime > top_traffic[i]) {
+            if (x.activeTime > top_traffic[i].activeTime) {
               top_traffic[i] = {source: x.destination, time: x.activeTime};
+              break;
             }
           }
         }
@@ -222,7 +223,7 @@ function topTraffic(res, params) {
       }
       top_traffic.sort(compare);
       for (var i = 0; i < top_traffic.length; i++){
-        msg += top_traffic[i].destination + ": " + top_traffic[i].time + " hour(s)\n";
+        msg += top_traffic[i].source + ": " + top_traffic[i].time + " hour(s)\n";
       }
       console.log("topTraffic msg", msg);
       return res.json({
@@ -249,11 +250,15 @@ function topTraffic(res, params) {
       return data.map(item => item.serial)
     })
     .then(serials => {
-      Promise.all(serials.map(serial => dashboard_client.get(`/devices/${serial}/clients`))).then(values => {
-        console.log(values); // [3, 1337, "foo"]
-      });
-
-
+      Promise.all(
+        serials.map(
+          serial => dashboard_client
+                      .get(`/devices/${serial}/clients`)
+                      .then(res => res.data)
+                    )
+                  )
+          )
+          
     })
     .catch(err => console.log(err.response.data))
 
