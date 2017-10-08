@@ -167,6 +167,7 @@ function adminsFind(res) {
         else {
           break;
         }
+        i += 1;
       }
       console.log("adminsFind msg", msg);
       console.log("str length",msg.length);
