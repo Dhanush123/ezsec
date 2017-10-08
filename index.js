@@ -3,9 +3,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const request = require("request");
-var TempMail = require('tempmail.js');
+var TempMail = require("tempmail.js");
 
-var tmpEmail = 'juyahevah@p33.org';
+var tmpEmail = "juyahevah@p33.org";
 var account = new TempMail(tmpEmail);
 
 const restService = express();
@@ -20,35 +20,26 @@ var options = {
 restService.post("/", function (req, res) {
   console.log("hook request");
   try {
-      if (req.body) {
-          var requestBody = req.body;
-          if (requestBody.result) {
-            actOnAction(requestBody.result.action, requestBody, res);
-          }
+    if (req.body) {
+      var requestBody = req.body;
+      if (requestBody.result) {
+        actions[requestBody.result.action](res);
       }
+    }
   }
   catch (err) {
     console.error("Cannot process request", err);
     return res.status(400).json({
-        status: {
-            code: 400,
-            errorType: err.message
-        }
+      status: {
+        code: 400,
+        errorType: err.message
+      }
     });
   }
 });
 
-function actOnAction(action, body, res) {
-  switch (action) {
-    case 'orgsList':
-      orgsList(res)
-      break;
-    case 'alertsList':
-      alertsList(res);
-      break;
-    default:
-      break;
-  }
+var actions = {
+  orgsList, alertsList
 }
 
 function orgsList(res) {
@@ -86,14 +77,20 @@ function alertsList(res) {
       })
     })
     .then(msgs => {
-      res.json(msgs.map(msg => msg.subject));
+      res.json({
+        speech: JSON.stringify(msgs.map(msg => msg.subject), null, 2),
+        displayText: JSON.stringify(msgs.map(msg => msg.subject), null, 2)
+      });
     })
     .catch(error => {
-      res.json('Getting alerts failed: ' + error)
+      res.json({
+        status: {
+          code: 400,
+          errorType: "Getting alerts failed: " + error
+        }
+      }
     })
 }
-
-//549236
 
 restService.listen((process.env.PORT || 8000), function () {
   console.log("Server listening");
