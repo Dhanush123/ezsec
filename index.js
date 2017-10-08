@@ -5,6 +5,8 @@ const bodyParser = require("body-parser");
 const request = require("request");
 var TempMail = require("tempmail.js");
 
+const delay = require('delay');
+
 var tmpEmail = "juyahevah@p33.org";
 var account = new TempMail(tmpEmail);
 
@@ -24,19 +26,6 @@ var options = {
     "X-Cisco-Meraki-API-Key": "27fece4cac8304e262ee1ee81d27844096e7b2e4"
   },
 };
-
-function DelayPromise(delay) {
-  //return a function that accepts a single variable
-  return function(data) {
-    //this function returns a promise.
-    return new Promise(function(resolve, reject) {
-      setTimeout(function() {
-        //a promise that is resolved after "delay" milliseconds with the data provided
-        resolve(data);
-      }, delay);
-    });
-  }
-}
 
 restService.post("/", function (req, res) {
   console.log("hook request");
@@ -270,7 +259,7 @@ function dataUsage(res, params) {
       return Promise.all(serials.map(serial => {
         dashboard_client
           .get(`/devices/${cereal}/clients?timespan=${seconds}`)
-          .then(DelayPromise(250))
+          .then(delay(250))
           .then(res => res.data)
       }));
     })
