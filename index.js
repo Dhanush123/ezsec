@@ -226,7 +226,7 @@ function topTraffic(res, params) {
       }
       top_traffic.sort(compare);
       for (var i = 0; i < top_traffic.length; i++){
-        msg += top_traffic[i].app + " (" top_traffic[i].source + "): " + top_traffic[i].time + " hour(s)\n";
+        msg += top_traffic[i].app + " (" + top_traffic[i].source + "): " + top_traffic[i].time + " hours\n";
       }
       console.log("topTraffic msg", msg);
       return res.json({
