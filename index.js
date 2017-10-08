@@ -50,7 +50,7 @@ restService.post("/", function (req, res) {
 });
 
 var actions = {
-  orgsList, alertsList, networksList, devicesList, adminsFind, topTraffic
+  orgsList, alertsList, networksList, devicesList, adminsFind, topTraffic, dataUsage
 }
 
 function orgsList(res) {
@@ -241,7 +241,7 @@ function topTraffic(res, params) {
   request(options, callback);
 }
 
-/*function dataUsageStats(res, params) {
+function dataUsage(res, params) {
   let network_id = 'N_646829496481140676';
   dashboard_client
     .get(`/networks/${network_id}/devices`)
@@ -250,19 +250,49 @@ function topTraffic(res, params) {
       return data.map(item => item.serial)
     })
     .then(serials => {
-      Promise.all(
+      return Promise.all(
         serials.map(
           serial => dashboard_client
                       .get(`/devices/${serial}/clients`)
                       .then(res => res.data)
-                    )
-                  )
-          )
-          
+        )
+      );
     })
-    .catch(err => console.log(err.response.data))
+    .then(raw_results => {
+      return raw_results.map(rres => {
+        return {
+          sent: rres.usage.sent,
+          received: rres.usage.recv,
+          total: rres.usage.sent + rres.usage.recv
+        }
+      })
+    })
+    .then(final_results => {
+      var total_results = final_results.reduce((sum, value) => {
+        return {
+          sent: sum.sent + value.sent,
+          received: sum.received + value.received,
+          total: sum.total + value.total
+        };
+      });
 
-}*/
+      console.log(final_results);
+      var final_spoken_msg = `The overall data usage over ${time_period} hours is or ${total_results.total / 1024.0} megabytes. On average, most clients use about ${total_results.total / 1024.0 / time_period} megabytes per hour.`
+      var final_display_msg =
+        `Overall Data Usage over ${time_period} hours: ${total_results.total / 1024.0} MB\n` +
+        `Average Data Usage over ${time_period} hours: ${total_results.total / 1024.0 / time_period} MB/hr`;
+      res.json({
+        speech: final_spoken_msg,
+        displayText: final_display_msg
+      })
+    });
+    .catch(error => {
+      res.json({
+        speech: JSON.stringify(error.response.data),
+        displayText: JSON.stringify(error.response.data)
+      })
+    })
+}
 
 restService.listen((process.env.PORT || 8000), function () {
   console.log("Server listening");
