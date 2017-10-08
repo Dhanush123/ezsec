@@ -261,10 +261,12 @@ function dataUsage(res, params) {
     .get(`/networks/${network_id}/devices`)
     .then(res => res.data)
     .then(data => {
-      return data.map(item => item.serial)
+      console.log('init_map');
+      return data.map(item => item.serial).slice(0, 20)
     })
     .then(serials => {
       var seconds = hours * 60 * 60;
+      console.log('serial');
       return Promise.all(serials.map(serial => {
         dashboard_client
           .get(`/devices/${cereal}/clients?timespan=${seconds}`)
@@ -273,6 +275,7 @@ function dataUsage(res, params) {
       }));
     })
     .then(raw_results => {
+      console.log('raw');
       return raw_results.map(rres => {
         return {
           sent: rres.usage.sent,
@@ -282,6 +285,7 @@ function dataUsage(res, params) {
       })
     })
     .then(final_results => {
+      console.log('final')
       var total_results = final_results.reduce((sum, value) => {
         return {
           sent: sum.sent + value.sent,
