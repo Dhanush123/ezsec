@@ -258,15 +258,7 @@ function dataUsage(res, params) {
     .then(serials => {
       var seconds = hours * 60 * 60;
       console.log('serial');
-      return pMapSeries(
-        serials,
-        cereal => {
-          dashboard_client.get(`/devices/${cereal}/clients?timespan=${seconds}`)
-            .then(res => {
-              return res ? res.data : null
-            })
-        }
-      )
+      return pMapSeries(serials, cereal => dashboard_client.get(`/devices/${cereal}/clients?timespan=${seconds}`))
     })
     .then(raw_results => {
       console.log(raw_results.length);
