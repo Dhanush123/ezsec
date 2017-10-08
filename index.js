@@ -163,6 +163,7 @@ function adminsFind(res) {
         msg += x.name + " - " + x.email + "\n";
       }
       console.log("adminsFind msg", msg);
+      console.log("str length",msg.length);
       return res.json({
         speech: msg,
         displayText: msg
