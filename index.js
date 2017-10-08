@@ -209,12 +209,12 @@ function topTraffic(res, params) {
       console.log("topTraffic traffic", traffic);
       for (var x of traffic) {
         if (top_traffic.length < 10) {
-          top_traffic.push({source: x.destination, time: x.activeTime});
+          top_traffic.push({ app: x.application, source: x.destination, time: x.activeTime, numClients: x.numClients });
         }
         else {
           for (var i = 0; i < top_traffic.length; i++){
             if (x.activeTime > top_traffic[i].activeTime) {
-              top_traffic[i] = {source: x.destination, time: x.activeTime};
+              top_traffic[i] = { app: x.application, source: x.destination, time: x.activeTime, numClients: x.numClients };
               break;
             }
           }
@@ -226,7 +226,7 @@ function topTraffic(res, params) {
       }
       top_traffic.sort(compare);
       for (var i = 0; i < top_traffic.length; i++){
-        msg += top_traffic[i].source + ": " + top_traffic[i].time + " hour(s)\n";
+        msg += top_traffic[i].app + " (" top_traffic[i].source + "): " + top_traffic[i].time + " hour(s)\n";
       }
       console.log("topTraffic msg", msg);
       return res.json({
