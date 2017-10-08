@@ -44,7 +44,7 @@ var actions = {
 }
 
 function orgsList(res) {
-  options.url = baseUrl + "/api/v0/organizations"
+  options.url = baseUrl + "/api/v0/organizations";
   function callback(error, response, body) {
     if (!error && response.statusCode == 200) {
       var orgs = JSON.parse(body);
@@ -57,6 +57,12 @@ function orgsList(res) {
       return res.json({
         speech: msg,
         displayText: msg
+      });
+    }
+    else {
+      return res.json({
+        speech: JSON.stringify(error),
+        displayText: JSON.stringify(error)
       });
     }
   }
@@ -94,7 +100,7 @@ function alertsList(res) {
 }
 
 function networksList(res){
-  options.url = baseUrl + "/api/v0/networks/549236/devices"
+  options.url = baseUrl + "/api/v0/networks/549236/devices";
   function callback(error, response, body) {
     if (!error && response.statusCode == 200) {
       var networks = JSON.parse(body);
@@ -109,8 +115,14 @@ function networksList(res){
         displayText: msg
       });
     }
+    else {
+      return res.json({
+        speech: JSON.stringify(error),
+        displayText: JSON.stringify(error)
+      });
+    }
   }
-  request(options, callback);  
+  request(options, callback);
 }
 
 //549236
