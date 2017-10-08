@@ -243,7 +243,7 @@ function topTraffic(res, params) {
 
 function dataUsage(res, params) {
   let network_id = 'N_646829496481140676';
-  let hours = parseInt(params.hours.split(" ")[0]);
+  let hours = params.duration.amount;
   dashboard_client
     .get(`/networks/${network_id}/devices`)
     .then(res => res.data)
