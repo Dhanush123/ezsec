@@ -205,13 +205,14 @@ function topTraffic(res, params) {
       var msg = "Your network, Cal Hackz - wireless, has the following sites/apps in Top 10 Traffic:\n";
       console.log("topTraffic traffic", traffic);
       for (var x of traffic) {
-        if top_traffic.length < 10 {
-          topTraffic.push({source: x.destination, time: x.activeTime});
+        if (top_traffic.length < 10) {
+          top_traffic.push({source: x.destination, time: x.activeTime});
         }
         else {
           for (var i = 0; i < top_traffic.length; i++){
-            if x.activeTime > top_traffic[i]:
+            if (x.activeTime > top_traffic[i]) {
               top_traffic[i] = {source: x.destination, time: x.activeTime};
+            }
           }
         }
       }
@@ -248,7 +249,11 @@ function topTraffic(res, params) {
       return data.map(item => item.serial)
     })
     .then(serials => {
-      serials.map()
+      Promise.all(serials.map(serial => dashboard_client.)).then(values => {
+        console.log(values); // [3, 1337, "foo"]
+      });
+
+
     })
     .catch(err => console.log(err.response.data))
 
