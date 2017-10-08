@@ -159,8 +159,14 @@ function adminsFind(res) {
       var people = JSON.parse(body);
       var msg = "Your organization, Meraki Live Sandbox, has the following admins:\n";
       console.log("adminsFinds people", people);
+      var i = 0;
       for (var x of people) {
-        msg += x.name + " - " + x.email + "\n";
+        if (i < 10){
+          msg += x.name + " - " + x.email + "\n";
+        }
+        else {
+          break;
+        }
       }
       console.log("adminsFind msg", msg);
       console.log("str length",msg.length);
