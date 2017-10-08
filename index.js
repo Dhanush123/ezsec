@@ -258,12 +258,21 @@ function dataUsage(res, params) {
     .then(serials => {
       var seconds = hours * 60 * 60;
       console.log('serial');
-      return pMapSeries(serials, cereal => dashboard_client.get(`/devices/${cereal}/clients?timespan=${seconds}`).then(res => res.data))
+      return pMapSeries(
+        serials,
+        cereal => {
+          dashboard_client.get(`/devices/${cereal}/clients?timespan=${seconds}`)
+            .then(res => {
+              return res ? res.data : null
+            })
+        }
+      )
     })
     .then(raw_results => {
       console.log(raw_results.length);
       console.log('raw');
       return raw_results.map(rres => {
+        console.log(rres);
         return {
           sent: rres.usage.sent,
           received: rres.usage.recv,
