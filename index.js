@@ -6,6 +6,7 @@ const request = require("request");
 var TempMail = require("tempmail.js");
 
 const delay = require('delay');
+const pMinDelay = require('p-min-delay');
 
 var tmpEmail = "juyahevah@p33.org";
 var account = new TempMail(tmpEmail);
@@ -251,15 +252,13 @@ function dataUsage(res, params) {
     .then(res => res.data)
     .then(data => {
       console.log('init_map');
-      return data.map(item => item.serial).slice(0, 5)
+      return data.map(item => item.serial).slice(0, 10)
     })
     .then(serials => {
       var seconds = hours * 60 * 60;
       console.log('serial');
       return Promise.all(serials.map(serial => {
-        dashboard_client
-          .get(`/devices/${serial}/clients?timespan=${seconds}`)
-          .then(delay(250))
+        return pMinDelay(dashboard_client.get(`/devices/${serial}/clients?timespan=${seconds}`), 500)
           .then(res => {
             console.log(Object.keys(res))
             return res.data
