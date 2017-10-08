@@ -251,7 +251,7 @@ function dataUsage(res, params) {
     .then(res => res.data)
     .then(data => {
       console.log('init_map');
-      return data.map(item => item.serial).slice(0, 20)
+      return data.map(item => item.serial).slice(0, 5)
     })
     .then(serials => {
       var seconds = hours * 60 * 60;
