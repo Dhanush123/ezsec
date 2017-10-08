@@ -61,6 +61,7 @@ function orgsList(){
       var msg = "You are in the following organizations:\n";
       console.log("orgsList orgs",orgs);
       for (var x in orgs) {
+        console.log(x);
         msg += x.name + "\n"
       }
       console.log("orgsList msg",msg);
