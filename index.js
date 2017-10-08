@@ -100,7 +100,7 @@ function alertsList(res) {
 }
 
 function networksList(res){
-  options.url = baseUrl + "/api/v0/networks/549236/devices";
+  options.url = baseUrl + "/api/v0/organizations/549236/networks";
   function callback(error, response, body) {
     if (!error && response.statusCode == 200) {
       var networks = JSON.parse(body);
