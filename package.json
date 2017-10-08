@@ -18,6 +18,6 @@
     "axios": "^0.16.2",
     "p-each-series": "^1.0.0",
     "p-map-series": "^1.0.0",
-    "d3-node": "^1.1.1"
+    "quiche": "^0.3.0"
   }
 }

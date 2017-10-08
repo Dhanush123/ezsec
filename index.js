@@ -11,6 +11,8 @@ const pMapSeries = require('p-map-series');
 var tmpEmail = "juyahevah@p33.org";
 var account = new TempMail(tmpEmail);
 
+var Quiche = require('quiche');
+
 var axios = require('axios');
 
 var dashboard_client = axios.create({
@@ -28,11 +30,15 @@ var options = {
   },
 };
 
+var isSpark = False;
+
 restService.post("/", function (req, res) {
   console.log("hook request");
   try {
     if (req.body) {
       var requestBody = req.body;
+      var chatSource = requestBody.originalRequest.source;
+      isSpark = (chatSource == "slack");
       if (requestBody.result && Object.keys(requestBody.result.parameters).length == 0) {
         actions[requestBody.result.action](res);
       }
@@ -229,6 +235,17 @@ function topTraffic(res, params) {
         msg += top_traffic[i].source + ": " + top_traffic[i].time + " hours\n";
       }
       console.log("topTraffic msg", msg);
+
+      var pie = new Quiche('pie');
+      pie.setTransparentBackground(); // Make background transparent
+      pie.addData(3000, 'Foo', 'FF0000');
+      pie.addData(2900, 'Bas', '0000FF');
+      pie.addData(1500, 'Bar', '00FF00');
+      pie.setLabel(['Foo','Bas','Bar']); // Add labels to pie segments
+      var imageUrl = pie.getUrl(true);
+
+      msg += imageUrl;
+
       return res.json({
         speech: msg,
         displayText: msg
@@ -251,7 +268,7 @@ function dataUsage(res, params) {
   dashboard_client
     .get(`/networks/${network_id}/devices`)
     .then(res => {
-      console.log(res);
+      console.log(res.data.length);
       return res.data
     })
     .then(data => {
