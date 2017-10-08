@@ -52,7 +52,7 @@ restService.post("/", function (req, res) {
 });
 
 var actions = {
-  orgsList, alertsList, networksList, devicesList, adminsFind, topTraffic, dataUsage
+  orgsList, alertsList, networksList, devicesList, adminsFind, topTraffic, dataUsage, blockSite
 }
 
 function orgsList(res) {
@@ -246,7 +246,6 @@ function topTraffic(res, params) {
 function dataUsage(res, params) {
   let network_id = 'N_646829496481140676';
   let hours = params.hours.amount;
-  var queue = new Queue(2, Infinity);
 
   dashboard_client
     .get(`/networks/${network_id}/devices`)
@@ -299,7 +298,18 @@ function dataUsage(res, params) {
     })
 }
 
-// function updateRules(res)
+function blockSite(res, params) {
+  request.post({url:'http://service.com/upload', form: 
+  {policy: 'Deny',
+   protocol: "any",
+   destPort: "any",
+   destCidr: params.url
+  }}
+  ,function(err,res,body){ 
+    console.log("blockSite callback");
+    console.log(err,res,body);
+  });
+}
 
 restService.listen((process.env.PORT || 8000), function () {
   console.log("Server listening");
