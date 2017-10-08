@@ -158,7 +158,7 @@ function adminsFind(res) {
     if (!error && response.statusCode == 200) {
       var people = JSON.parse(body);
       var msg = "Your organization, Meraki Live Sandbox, has the following admins:\n";
-      console.log("adminsFinds people", devices);
+      console.log("adminsFinds people", people);
       for (var x of people) {
         msg += x.name + " - " + x.email + "\n";
       }
