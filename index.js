@@ -238,10 +238,10 @@ function topTraffic(res, params) {
 
       var pie = new Quiche('pie');
       pie.setTransparentBackground(); // Make background transparent
-      pie.addData(3000, 'Foo', 'FF0000');
-      pie.addData(2900, 'Bas', '0000FF');
-      pie.addData(1500, 'Bar', '00FF00');
-      pie.setLabel(['Foo','Bas','Bar']); // Add labels to pie segments
+      pie.addData(60, 'gravatar', 'FF0000');
+      pie.addData(480, 'google', '0000FF');
+      pie.addData(300, 'linux.college', '00FF00');
+      pie.setLabel(['gravatar','linux.college','google']); // Add labels to pie segments
       var imageUrl = pie.getUrl(true);
 
       msg += imageUrl;
