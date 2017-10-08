@@ -249,7 +249,7 @@ function topTraffic(res, params) {
       return data.map(item => item.serial)
     })
     .then(serials => {
-      Promise.all(serials.map(serial => dashboard_client.)).then(values => {
+      Promise.all(serials.map(serial => dashboard_client.get(`/devices/${serial}/clients`))).then(values => {
         console.log(values); // [3, 1337, "foo"]
       });
 
