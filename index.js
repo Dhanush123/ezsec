@@ -8,6 +8,13 @@ var TempMail = require("tempmail.js");
 var tmpEmail = "juyahevah@p33.org";
 var account = new TempMail(tmpEmail);
 
+var axios = require('axios');
+
+var dashboard_client = axios.create({
+  baseURL: 'https://dashboard.meraki.com/api/v0/',
+  headers: {"X-Cisco-Meraki-API-Key": "27fece4cac8304e262ee1ee81d27844096e7b2e4"}
+});
+
 const restService = express();
 restService.use(bodyParser.json());
 
@@ -23,8 +30,11 @@ restService.post("/", function (req, res) {
   try {
     if (req.body) {
       var requestBody = req.body;
-      if (requestBody.result) {
+      if (requestBody.result && Object.keys(requestBody.result.parameters).length == 0) {
         actions[requestBody.result.action](res);
+      }
+      else { //requestBody.result probably there, deals w/ params here
+        actions[requestBody.result.action](res, requestBody.result.parameters);
       }
     }
   }
@@ -40,7 +50,7 @@ restService.post("/", function (req, res) {
 });
 
 var actions = {
-  orgsList, alertsList, networksList, devicesList, adminsFind
+  orgsList, alertsList, networksList, devicesList, adminsFind, topTraffic
 }
 
 function orgsList(res) {
@@ -149,7 +159,7 @@ function devicesList(res) {
       });
     }
   }
-  request(options, callback);  
+  request(options, callback);
 }
 
 function adminsFind(res) {
@@ -183,8 +193,82 @@ function adminsFind(res) {
       });
     }
   }
-  request(options, callback);    
+  request(options, callback);
 }
+
+function topTraffic(res, params) {
+  options.url = baseUrl + "/api/v0/networks/N_646829496481140676/traffic?timespan="+(params.hours*3600);
+  function callback(error, response, body) {
+    if (!error && response.statusCode == 200) {
+      var traffic = JSON.parse(body);
+      var top_traffic = []
+      var msg = "Your network, Cal Hackz - wireless, has the following sites/apps in Top 10 Traffic:\n";
+      console.log("topTraffic traffic", traffic);
+      for (var x of traffic) {
+        if top_traffic.length < 10:
+          topTraffic.push({source: x.destination, time: x.activeTime});
+        else:
+          for (var i = 0; i < top_traffic.length; i++){
+            if x.activeTime > top_traffic[i]:
+              top_traffic[i] = {source: x.destination, time: x.activeTime};
+          }
+      }
+
+      function compare(a, b) {
+        return a.time - b.time;
+      }
+      top_traffic.sort(compare);
+      for (var i = 0; i < top_traffic.length; i++){
+        msg += top_traffic[i].destination + ": " + top_traffic[i].time + " hour(s)\n";
+      }
+      console.log("topTraffic msg", msg);
+      return res.json({
+        speech: msg,
+        displayText: msg
+      });
+    }
+    else {
+      return res.json({
+        speech: JSON.stringify(error),
+        displayText: JSON.stringify(error)
+      });
+    }
+  }
+  request(options, callback);
+}
+
+/*function dataUsageStats(res, params) {
+
+  options.url = baseUrl + "/api/v0/networks/N_646829496481140676/traffic?timespan="+(params.hours*3600);
+  function callback(error, response, body) {
+    if (!error && response.statusCode == 200) {
+      var traffic = JSON.parse(body);
+      var top_traffic = []
+      var msg = "Your network, Cal Hackz - wireless, has the following sites/apps with the top traffic:\n";
+      console.log("topTraffic traffic", traffic);
+      for (var x of traffic):
+        if top_traffic.length < 10:
+          topTraffic.push({source: x.destination, time: x.activeTime});
+        else:
+          for (var i = 0; i < top_traffic.length; i++){
+            if x.activeTime > top_traffic[i]:
+              top_traffic[i] = {source: x.destination, time: x.activeTime};
+          }
+      console.log("topTraffic msg", msg);
+      return res.json({
+        speech: msg,
+        displayText: msg
+      });
+    }
+    else {
+      return res.json({
+        speech: JSON.stringify(error),
+        displayText: JSON.stringify(error)
+      });
+    }
+  }
+  request(options, callback);
+}*/
 
 restService.listen((process.env.PORT || 8000), function () {
   console.log("Server listening");
