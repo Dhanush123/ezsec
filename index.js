@@ -25,6 +25,19 @@ var options = {
   },
 };
 
+function DelayPromise(delay) {
+  //return a function that accepts a single variable
+  return function(data) {
+    //this function returns a promise.
+    return new Promise(function(resolve, reject) {
+      setTimeout(function() {
+        //a promise that is resolved after "delay" milliseconds with the data provided
+        resolve(data);
+      }, delay);
+    });
+  }
+}
+
 restService.post("/", function (req, res) {
   console.log("hook request");
   try {
@@ -252,13 +265,12 @@ function dataUsage(res, params) {
     })
     .then(serials => {
       var seconds = hours * 60 * 60;
-      return Promise.all(
-        serials.map(
-          serial => dashboard_client
-                      .get(`/devices/${serial}/clients?timespan=${seconds}`)
-                      .then(res => res.data)
-        )
-      );
+      return Promise.all(serials.map(serial => {
+        dashboard_client
+          .get(`/devices/${cereal}/clients?timespan=${seconds}`)
+          .then(DelayPromise(250))
+          .then(res => res.data)
+      }));
     })
     .then(raw_results => {
       return raw_results.map(rres => {
