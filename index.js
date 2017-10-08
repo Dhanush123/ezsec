@@ -11,10 +11,11 @@ var account = new TempMail(tmpEmail);
 const restService = express();
 restService.use(bodyParser.json());
 
+const baseUrl = "https://dashboard.meraki.com";
 var options = {
   headers: {
     "X-Cisco-Meraki-API-Key": "27fece4cac8304e262ee1ee81d27844096e7b2e4"
-  }
+  },
 };
 
 restService.post("/", function (req, res) {
@@ -39,11 +40,11 @@ restService.post("/", function (req, res) {
 });
 
 var actions = {
-  orgsList, alertsList
+  orgsList, alertsList, networksList
 }
 
 function orgsList(res) {
-  options.url = "https://dashboard.meraki.com/api/v0/organizations"
+  options.url = baseUrl + "/api/v0/organizations"
   function callback(error, response, body) {
     if (!error && response.statusCode == 200) {
       var orgs = JSON.parse(body);
@@ -78,8 +79,8 @@ function alertsList(res) {
     })
     .then(msgs => {
       res.json({
-        speech: JSON.stringify(msgs.map(msg => msg.subject), null, 2),
-        displayText: JSON.stringify(msgs.map(msg => msg.subject), null, 2)
+        speech: JSON.stringify(msgs/*.map(msg => msg.subject)*/, null, 2),
+        displayText: JSON.stringify(msgs/*.map(msg => msg.subject)*/, null, 2)
       });
     })
     .catch(error => {
@@ -91,6 +92,28 @@ function alertsList(res) {
       })
     })
 }
+
+function networksList(res){
+  options.url = baseUrl + "/api/v0/networks/549236/devices"
+  function callback(error, response, body) {
+    if (!error && response.statusCode == 200) {
+      var networks = JSON.parse(body);
+      var msg = "Your organization has the networks:\n";
+      console.log("networksList networks", networks);
+      for (var x of orgs) {
+        msg += x.name + "\n"
+      }
+      console.log("networksList msg", msg);
+      return res.json({
+        speech: msg,
+        displayText: msg
+      });
+    }
+  }
+  request(options, callback);  
+}
+
+//549236
 
 restService.listen((process.env.PORT || 8000), function () {
   console.log("Server listening");
