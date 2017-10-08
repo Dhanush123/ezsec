@@ -133,7 +133,8 @@ function devicesList(res) {
       var msg = "Your network, Cal Hackz - wireless, has these devices:\n";
       console.log("devicesList devices", devices);
       for (var x of devices) {
-        msg += x.name + "\n"
+        add_str = x.name != null ? x.name : x.model;
+        msg += add_str + "\n"
       }
       console.log("devicesList msg", msg);
       return res.json({
