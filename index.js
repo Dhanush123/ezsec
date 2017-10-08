@@ -299,7 +299,7 @@ function dataUsage(res, params) {
     })
 }
 
-function blockSite(res, params) {
+function blockSite(rez, params) {
   request.post({
     url:'https://dashboard.meraki.com/api/v0/networks/N_646829496481140676/ssids/0/l3FirewallRules', 
     form: 
@@ -312,13 +312,13 @@ function blockSite(res, params) {
     console.log("blockSite callback");
     console.log(err,res,body);
     if(!err){
-      return res.json({
+      return rez.json({
         speech: "Successfully blocked: " + params.url,
         displayText: "Successfully blocked: " + params.url
       })
     }
     else {
-      return res.json({
+      return rez.json({
         speech: JSON.stringify(err),
         displayText: JSON.stringify(err)
       })
