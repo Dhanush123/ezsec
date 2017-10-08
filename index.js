@@ -261,7 +261,7 @@ function dataUsage(res, params) {
       return pMapSeries(serials, cereal => dashboard_client.get(`/devices/${cereal}/clients?timespan=${seconds}`).then(res => res.data))
     })
     .then(raw_results => {
-      console.log(raw_results);
+      console.log(raw_results.length);
       console.log('raw');
       return raw_results.map(rres => {
         return {
@@ -315,13 +315,13 @@ function blockSite(res, params) {
       return res.json({
         speech: "Successfully blocked: " + params.url,
         displayText: "Successfully blocked: " + params.url
-      });
+      })
     }
     else {
       return res.json({
         speech: JSON.stringify(err),
         displayText: JSON.stringify(err)
-      });
+      })
     }
   });
 }
