@@ -264,7 +264,7 @@ function dataUsage(res, params) {
       console.log(raw_results.length);
       console.log('raw');
       return raw_results.map(rres => {
-        console.log(rres);
+        console.log(typeof rres);
         return {
           sent: rres.usage.sent,
           received: rres.usage.recv,
