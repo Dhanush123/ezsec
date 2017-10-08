@@ -40,7 +40,7 @@ restService.post("/", function (req, res) {
 });
 
 var actions = {
-  orgsList, alertsList, networksList
+  orgsList, alertsList, networksList, devicesList
 }
 
 function orgsList(res) {
@@ -125,7 +125,31 @@ function networksList(res){
   request(options, callback);
 }
 
-//549236
+function devicesList(res) {
+  options.url = baseUrl + "/api/v0/organizations/N_646829496481140676/networks";
+  function callback(error, response, body) {
+    if (!error && response.statusCode == 200) {
+      var devices = JSON.parse(body);
+      var msg = "Your network, Cal Hackz - wireless, has these devices:\n";
+      console.log("devicesList devices", devices);
+      for (var x of devices) {
+        msg += x.name + "\n"
+      }
+      console.log("devicesList msg", msg);
+      return res.json({
+        speech: msg,
+        displayText: msg
+      });
+    }
+    else {
+      return res.json({
+        speech: JSON.stringify(error),
+        displayText: JSON.stringify(error)
+      });
+    }
+  }
+  request(options, callback);  
+}
 
 restService.listen((process.env.PORT || 8000), function () {
   console.log("Server listening");
