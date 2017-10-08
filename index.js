@@ -106,7 +106,7 @@ function networksList(res){
       var networks = JSON.parse(body);
       var msg = "Your organization has the networks:\n";
       console.log("networksList networks", networks);
-      for (var x of orgs) {
+      for (var x of networks) {
         msg += x.name + "\n"
       }
       console.log("networksList msg", msg);
