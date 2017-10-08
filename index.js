@@ -231,18 +231,23 @@ function topTraffic(res, params) {
         return a.time - b.time;
       }
       top_traffic.sort(compare);
+
       for (var i = 0; i < top_traffic.length; i++){
         msg += top_traffic[i].source + ": " + top_traffic[i].time + " hours\n";
       }
+
       console.log("topTraffic msg", msg);
 
-      var pie = new Quiche('pie');
-      pie.setTransparentBackground(); // Make background transparent
-      pie.addData(60, 'gravatar', 'FF0000');
-      pie.addData(480, 'google', '0000FF');
-      pie.addData(300, 'linux.college', '00FF00');
-      pie.setLabel(['gravatar','linux.college','google']); // Add labels to pie segments
-      var imageUrl = pie.getUrl(true);
+      var params = '';
+
+      var cat = [];
+      var val = [];
+      for (var i = 1; i <= 5; i++){
+        params += 'cat' + i + '=' + top_traffic[i - 1].source + '&';
+        params += 'val' + i + '=' + top_traffic[i - 1].time + '&';
+      }
+
+      var imageUrl = 'http://ezviz.paperplane.io/pie.html?' + params;
 
       msg += imageUrl;
 
