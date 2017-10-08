@@ -226,7 +226,7 @@ function topTraffic(res, params) {
       }
       top_traffic.sort(compare);
       for (var i = 0; i < top_traffic.length; i++){
-        msg += top_traffic[i].app + " (" + top_traffic[i].source + "): " + top_traffic[i].time + " hours\n";
+        msg += top_traffic[i].source + ": " + top_traffic[i].time + " hours\n";
       }
       console.log("topTraffic msg", msg);
       return res.json({
@@ -250,7 +250,10 @@ function dataUsage(res, params) {
 
   dashboard_client
     .get(`/networks/${network_id}/devices`)
-    .then(res => res.data)
+    .then(res => {
+      console.log(res);
+      return res.data
+    })
     .then(data => {
       console.log('init_map');
       return data.map(item => item.serial).slice(0, 10)
