@@ -6,6 +6,7 @@ const request = require("request");
 var TempMail = require("tempmail.js");
 
 const pEachSeries = require('p-each-series');
+const pMapSeries = require('p-map-series');
 
 var tmpEmail = "juyahevah@p33.org";
 var account = new TempMail(tmpEmail);
@@ -257,7 +258,7 @@ function dataUsage(res, params) {
     .then(serials => {
       var seconds = hours * 60 * 60;
       console.log('serial');
-      return pEachSeries(serials, cereal => dashboard_client.get(`/devices/${cereal}/clients?timespan=${seconds}`).then(res => res.data))
+      return pMapSeries(serials, cereal => dashboard_client.get(`/devices/${cereal}/clients?timespan=${seconds}`).then(res => res.data))
     })
     .then(raw_results => {
       console.log(raw_results);
@@ -299,7 +300,9 @@ function dataUsage(res, params) {
 }
 
 function blockSite(res, params) {
-  request.post({url:'http://service.com/upload', form: 
+  request.post({
+    url:'https://dashboard.meraki.com/api/v0/networks/N_646829496481140676/ssids/0/l3FirewallRules', 
+    form: 
   {policy: 'Deny',
    protocol: "any",
    destPort: "any",
@@ -308,6 +311,18 @@ function blockSite(res, params) {
   ,function(err,res,body){ 
     console.log("blockSite callback");
     console.log(err,res,body);
+    if(!err){
+      res.json({
+        speech: "Successfully blocked: " + params.url,
+        displayText: "Successfully blocked: " + params.url
+      });
+    }
+    else {
+      return res.json({
+        speech: JSON.stringify(err),
+        displayText: JSON.stringify(err)
+      }); 
+    }
   });
 }
 

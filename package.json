@@ -16,6 +16,8 @@
     "jsonic": "^0.3.0",
     "tempmail.js": "^0.2.1",
     "axios": "^0.16.2",
-    "p-each-series": "^1.0.0"
+    "p-each-series": "^1.0.0",
+    "p-map-series": "^1.0.0",
+    "d3-node": "^1.1.1"
   }
 }
