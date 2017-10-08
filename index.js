@@ -40,7 +40,7 @@ restService.post("/", function (req, res) {
 });
 
 var actions = {
-  orgsList, alertsList, networksList, devicesList
+  orgsList, alertsList, networksList, devicesList, adminsFind
 }
 
 function orgsList(res) {
@@ -150,6 +150,32 @@ function devicesList(res) {
     }
   }
   request(options, callback);  
+}
+
+function adminsFind(res) {
+  options.url = baseUrl + "/api/v0/organizations/549236/admins";
+  function callback(error, response, body) {
+    if (!error && response.statusCode == 200) {
+      var people = JSON.parse(body);
+      var msg = "Your organization, Meraki Live Sandbox, has the following admins:\n";
+      console.log("adminsFinds people", devices);
+      for (var x of people) {
+        msg += x.name + " - " + x.email + "\n";
+      }
+      console.log("adminsFind msg", msg);
+      return res.json({
+        speech: msg,
+        displayText: msg
+      });
+    }
+    else {
+      return res.json({
+        speech: JSON.stringify(error),
+        displayText: JSON.stringify(error)
+      });
+    }
+  }
+  request(options, callback);    
 }
 
 restService.listen((process.env.PORT || 8000), function () {
