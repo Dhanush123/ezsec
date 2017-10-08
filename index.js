@@ -142,6 +142,7 @@ function devicesList(res) {
       });
     }
     else {
+      console.log("not succesful wth");
       return res.json({
         speech: JSON.stringify(error),
         displayText: JSON.stringify(error)
