@@ -3,12 +3,15 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const request = require("request");
+var TempMail = require('tempmail.js');
+
+var tmpEmail = 'juyahevah@p33.org';
+var account = new TempMail(tmpEmail);
 
 const restService = express();
 restService.use(bodyParser.json());
 
-gRes = null;
-console.log("gRes1",gRes);
+var gRes = null;
 
 var options = {
   headers: {
@@ -59,7 +62,6 @@ function orgsList(){
       for (var x in orgs) {
         msg += x.name + "\n"
       }
-      console.log("gRes2",gRes);
       gRes.json(msg);
     }
   }
@@ -67,7 +69,25 @@ function orgsList(){
 }
 
 function alertsList() {
-
+  account
+    .getMail()
+    .then(raw_messages => {
+      return raw_messages.map(msg => {
+        return {
+          id: msg.mail_id,
+          user_id: msg.mail_address_id,
+          from: msg.mail_from,
+          subject: msg.mail_subject,
+          content: msg.mail_text
+        }
+      })
+    })
+    .then(msgs => {
+      console.log(JSON.stringify(msgs.map(msg => msg.subject), null, 2));
+    })
+    .catch(error => {
+      console.log('Getting alerts failed: ' + error)
+    })
 }
 
 restService.listen((process.env.PORT || 8000), function () {
