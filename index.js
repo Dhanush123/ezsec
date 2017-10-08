@@ -126,7 +126,7 @@ function networksList(res){
 }
 
 function devicesList(res) {
-  options.url = baseUrl + "/api/v0/organizations/N_646829496481140676/networks";
+  options.url = baseUrl + "/api/v0/networks/N_646829496481140676/devices";
   function callback(error, response, body) {
     if (!error && response.statusCode == 200) {
       var devices = JSON.parse(body);
@@ -142,7 +142,6 @@ function devicesList(res) {
       });
     }
     else {
-      console.log("not succesful wth");
       return res.json({
         speech: JSON.stringify(error),
         displayText: JSON.stringify(error)
