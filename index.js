@@ -11,8 +11,6 @@ var account = new TempMail(tmpEmail);
 const restService = express();
 restService.use(bodyParser.json());
 
-var gRes = null;
-
 var options = {
   headers: {
     "X-Cisco-Meraki-API-Key": "27fece4cac8304e262ee1ee81d27844096e7b2e4"
@@ -23,10 +21,9 @@ restService.post("/", function (req, res) {
   console.log("hook request");
   try {
       if (req.body) {
-          gRes = res;
           var requestBody = req.body;
           if (requestBody.result) {
-            actOnAction(requestBody.result.action, requestBody);
+            actOnAction(requestBody.result.action, requestBody, res);
           }
       }
   }
@@ -41,30 +38,31 @@ restService.post("/", function (req, res) {
   }
 });
 
-function actOnAction(action, body) {
+function actOnAction(action, body, res) {
   switch (action) {
     case 'orgsList':
-      orgsList()
+      orgsList(res)
       break;
     case 'alertsList':
+      alertsList(res);
       break;
     default:
       break;
   }
 }
 
-function orgsList(){
+function orgsList(res) {
   options.url = "https://dashboard.meraki.com/api/v0/organizations"
   function callback(error, response, body) {
     if (!error && response.statusCode == 200) {
       var orgs = JSON.parse(body);
       var msg = "You are in the following organizations:\n";
       console.log("orgsList orgs",orgs);
-      for (var x in orgs) {
-        msg += orgs[x].name + "\n"
+      for (var x of orgs) {
+        msg += x.name + "\n"
       }
       console.log("orgsList msg",msg);
-      return gRes.json({
+      return res.json({
         speech: msg,
         displayText: msg
       });
@@ -73,7 +71,7 @@ function orgsList(){
   request(options, callback);
 }
 
-function alertsList() {
+function alertsList(res) {
   account
     .getMail()
     .then(raw_messages => {
@@ -88,12 +86,14 @@ function alertsList() {
       })
     })
     .then(msgs => {
-      gRes.json(msgs.map(msg => msg.subject));
+      res.json(msgs.map(msg => msg.subject));
     })
     .catch(error => {
-      gRes.json('Getting alerts failed: ' + error)
+      res.json('Getting alerts failed: ' + error)
     })
 }
+
+//549236
 
 restService.listen((process.env.PORT || 8000), function () {
   console.log("Server listening");
