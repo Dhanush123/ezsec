@@ -205,13 +205,15 @@ function topTraffic(res, params) {
       var msg = "Your network, Cal Hackz - wireless, has the following sites/apps in Top 10 Traffic:\n";
       console.log("topTraffic traffic", traffic);
       for (var x of traffic) {
-        if top_traffic.length < 10:
+        if top_traffic.length < 10 {
           topTraffic.push({source: x.destination, time: x.activeTime});
-        else:
+        }
+        else {
           for (var i = 0; i < top_traffic.length; i++){
             if x.activeTime > top_traffic[i]:
               top_traffic[i] = {source: x.destination, time: x.activeTime};
           }
+        }
       }
 
       function compare(a, b) {
@@ -238,36 +240,18 @@ function topTraffic(res, params) {
 }
 
 /*function dataUsageStats(res, params) {
+  let network_id = 'N_646829496481140676';
+  dashboard_client
+    .get(`/networks/${network_id}/devices`)
+    .then(res => res.data)
+    .then(data => {
+      return data.map(item => item.serial)
+    })
+    .then(serials => {
+      serials.map()
+    })
+    .catch(err => console.log(err.response.data))
 
-  options.url = baseUrl + "/api/v0/networks/N_646829496481140676/traffic?timespan="+(params.hours*3600);
-  function callback(error, response, body) {
-    if (!error && response.statusCode == 200) {
-      var traffic = JSON.parse(body);
-      var top_traffic = []
-      var msg = "Your network, Cal Hackz - wireless, has the following sites/apps with the top traffic:\n";
-      console.log("topTraffic traffic", traffic);
-      for (var x of traffic):
-        if top_traffic.length < 10:
-          topTraffic.push({source: x.destination, time: x.activeTime});
-        else:
-          for (var i = 0; i < top_traffic.length; i++){
-            if x.activeTime > top_traffic[i]:
-              top_traffic[i] = {source: x.destination, time: x.activeTime};
-          }
-      console.log("topTraffic msg", msg);
-      return res.json({
-        speech: msg,
-        displayText: msg
-      });
-    }
-    else {
-      return res.json({
-        speech: JSON.stringify(error),
-        displayText: JSON.stringify(error)
-      });
-    }
-  }
-  request(options, callback);
 }*/
 
 restService.listen((process.env.PORT || 8000), function () {
