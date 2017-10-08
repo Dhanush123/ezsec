@@ -62,7 +62,12 @@ function orgsList(){
       for (var x in orgs) {
         msg += x.name + "\n"
       }
-      gRes.json(msg);
+      console.log("orgsList msg",msg);
+      return gRes.json({
+        speech: msg
+        displayText: msg,
+        source: 'dhanush-quakey'
+      });
     }
   }
   request(options, callback);
@@ -83,10 +88,10 @@ function alertsList() {
       })
     })
     .then(msgs => {
-      console.log(JSON.stringify(msgs.map(msg => msg.subject), null, 2));
+      gRes.json(msgs.map(msg => msg.subject));
     })
     .catch(error => {
-      console.log('Getting alerts failed: ' + error)
+      gRes.json('Getting alerts failed: ' + error)
     })
 }
 
