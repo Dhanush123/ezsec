@@ -30,7 +30,7 @@ var options = {
   },
 };
 
-var isSpark = False;
+var isSpark = false;
 
 restService.post("/", function (req, res) {
   console.log("hook request");
