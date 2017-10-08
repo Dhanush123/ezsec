@@ -312,7 +312,7 @@ function blockSite(res, params) {
     console.log("blockSite callback");
     console.log(err,res,body);
     if(!err){
-      res.json({
+      return res.json({
         speech: "Successfully blocked: " + params.url,
         displayText: "Successfully blocked: " + params.url
       });
@@ -321,7 +321,7 @@ function blockSite(res, params) {
       return res.json({
         speech: JSON.stringify(err),
         displayText: JSON.stringify(err)
-      }); 
+      });
     }
   });
 }
