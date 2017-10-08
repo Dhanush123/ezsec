@@ -88,7 +88,7 @@ function alertsList(res) {
           code: 400,
           errorType: "Getting alerts failed: " + error
         }
-      }
+      })
     })
 }
 
