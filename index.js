@@ -258,9 +258,12 @@ function dataUsage(res, params) {
       console.log('serial');
       return Promise.all(serials.map(serial => {
         dashboard_client
-          .get(`/devices/${cereal}/clients?timespan=${seconds}`)
+          .get(`/devices/${serial}/clients?timespan=${seconds}`)
           .then(delay(250))
-          .then(res => res.data)
+          .then(res => {
+            console.log(Object.keys(res))
+            return res.data
+          })
       }));
     })
     .then(raw_results => {
