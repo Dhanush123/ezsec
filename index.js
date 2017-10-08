@@ -58,7 +58,8 @@ function orgsList(){
   function callback(error, response, body) {
     if (!error && response.statusCode == 200) {
       var orgs = JSON.parse(body);
-      var msg = "You are in the following organizations:\n"
+      var msg = "You are in the following organizations:\n";
+      console.log("orgsList orgs",orgs);
       for (var x in orgs) {
         msg += x.name + "\n"
       }
