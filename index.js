@@ -243,6 +243,7 @@ function topTraffic(res, params) {
 
 function dataUsage(res, params) {
   let network_id = 'N_646829496481140676';
+  let hours = parseInt(params.hours.split(" ")[0]);
   dashboard_client
     .get(`/networks/${network_id}/devices`)
     .then(res => res.data)
@@ -250,10 +251,11 @@ function dataUsage(res, params) {
       return data.map(item => item.serial)
     })
     .then(serials => {
+      var seconds = hours * 60 * 60;
       return Promise.all(
         serials.map(
           serial => dashboard_client
-                      .get(`/devices/${serial}/clients`)
+                      .get(`/devices/${serial}/clients?timespan=${seconds}`)
                       .then(res => res.data)
         )
       );
@@ -277,15 +279,15 @@ function dataUsage(res, params) {
       });
 
       console.log(final_results);
-      var final_spoken_msg = `The overall data usage over ${time_period} hours is or ${total_results.total / 1024.0} megabytes. On average, most clients use about ${total_results.total / 1024.0 / time_period} megabytes per hour.`
+      var final_spoken_msg = `The overall data usage over ${hours} hours is or ${total_results.total / 1024.0} megabytes. On average, most clients use about ${total_results.total / 1024.0 / hours} megabytes per hour.`
       var final_display_msg =
-        `Overall Data Usage over ${time_period} hours: ${total_results.total / 1024.0} MB\n` +
-        `Average Data Usage over ${time_period} hours: ${total_results.total / 1024.0 / time_period} MB/hr`;
+        `Overall Data Usage over ${hours} hours: ${total_results.total / 1024.0} MB\n` +
+        `Average Data Usage over ${hours} hours: ${total_results.total / 1024.0 / hours} MB/hr`;
       res.json({
         speech: final_spoken_msg,
         displayText: final_display_msg
       })
-    });
+    })
     .catch(error => {
       res.json({
         speech: JSON.stringify(error.response.data),
