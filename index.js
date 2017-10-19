@@ -130,23 +130,6 @@ function networksList(res){
 }
 
 function devicesList(res) {
-  /*dashboard.networks.list(549236)
-    .then(networks => {
-      var msg = "Your organization has the networks:\n";
-      console.log("networksList networks\n", networks);
-      msg += networks.map(network => network.name).join('\n');
-      console.log("networksList msg\n", msg);
-      return res.json({
-        speech: msg,
-        displayText: msg
-      });
-    })
-    .catch(error => {
-      return res.json({
-        speech: JSON.stringify(error),
-        displayText: JSON.stringify(error)
-      });
-    });*/
   dashboard.devices.list('L_646829496481095933')
     .then(devices => {
       var msg = "Your network, Sandbox 2 - Las Vegas USA, has these devices:\n";
@@ -164,34 +147,29 @@ function devicesList(res) {
         displayText: JSON.stringify(error)
       });
     });
-  /*options.url = baseUrl + "/api/v0/networks/N_646829496481140676/devices";
-  function callback(error, response, body) {
-    if (!error && response.statusCode == 200) {
-      var devices = JSON.parse(body);
-      var msg = "Your network, Cal Hackz - wireless, has these devices:\n";
-      console.log("devicesList devices", devices);
-      for (var x of devices) {
-        var add_str = x.name != null ? x.name : x.model;
-        msg += add_str + "\n"
-      }
-      console.log("devicesList msg", msg);
+}
+
+function adminsFind(res) {
+  dashboard.admins.list(549236)
+    .then(admins => {
+      var msg = "Your organization, Meraki Live Sandbox, has the following admins:\n";
+      console.log("adminsFinds people\n", admins);
+      msg += admins.slice(0, 10).map(admin => admin.name + " - " + admin.email).join('\n');
+      console.log("adminsFind msg\n", msg);
+      console.log("str length",msg.length);
       return res.json({
         speech: msg,
         displayText: msg
       });
-    }
-    else {
+    })
+    .catch(error => {
       return res.json({
         speech: JSON.stringify(error),
         displayText: JSON.stringify(error)
       });
-    }
-  }
-  request(options, callback);*/
-}
+    });
 
-function adminsFind(res) {
-  options.url = baseUrl + "/api/v0/organizations/549236/admins";
+  /*options.url = baseUrl + "/api/v0/organizations/549236/admins";
   function callback(error, response, body) {
     if (!error && response.statusCode == 200) {
       var people = JSON.parse(body);
@@ -221,7 +199,7 @@ function adminsFind(res) {
       });
     }
   }
-  request(options, callback);
+  request(options, callback);*/
 }
 
 function topTraffic(res, params) {
@@ -348,12 +326,15 @@ function blockSite(rez, params) {
   request.post({
     url:'https://dashboard.meraki.com/api/v0/networks/N_646829496481140676/ssids/0/l3FirewallRules', 
     form: 
-  {policy: 'Deny',
-   protocol: "any",
-   destPort: "any",
-   destCidr: params.url
-  }}
-  ,function(err,res,body){ 
+    {
+      policy: 'Deny',
+      protocol: "any",
+      destPort: "any",
+      destCidr: params.url
+    }
+  }
+  ,
+  function(err,res,body){ 
     console.log("blockSite callback");
     console.log(err,res,body);
     if(!err){
