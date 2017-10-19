@@ -159,9 +159,19 @@ function adminsFind(res) {
 }
 
 function topTraffic(res, params) {
-  /*dashboard.networks.getTrafficData('L_646829496481095933', { 'timespan' : params.hours * 3600 })
+  dashboard.networks.getTrafficData('L_646829496481095933', { 'timespan' : params.hours * 3600 })
     .then(traffic_data => {
-      var msg = "Your network, Sandbox 2 - Las Vegas USA, has the following sites/apps in Top 10 Traffic:\n";
+      var msg;
+
+      if (traffic_data.length === 0) {
+        msg = "It looks like no traffic data has been found!"
+        return res.json({
+          speech: msg,
+          displayText: msg
+        });
+      }
+
+      msg = "Your network, Sandbox 2 - Las Vegas USA, has the following sites/apps in Top 10 Traffic:\n";
       console.log("topTraffic traffic\n", traffic_data);
 
       var top_traffic = traffic_data
@@ -194,8 +204,8 @@ function topTraffic(res, params) {
         displayText: msg
       });
     })
-    .catch(error => defaultErrorHandler(error, res));*/
-  options.url = baseUrl + "/api/v0/networks/L_646829496481095933/traffic?timespan="+(params.hours*3600);
+    .catch(error => defaultErrorHandler(error, res));
+  /*options.url = baseUrl + "/api/v0/networks/L_646829496481095933/traffic?timespan="+(params.hours*3600);
   function callback(error, response, body) {
     if (!error && response.statusCode == 200) {
       var traffic = JSON.parse(body);
@@ -252,7 +262,7 @@ function topTraffic(res, params) {
       });
     }
   }
-  request(options, callback);
+  request(options, callback);*/
 }
 
 function dataUsage(res, params) {
@@ -349,34 +359,34 @@ restService.listen((process.env.PORT || 8000), function () {
 });
 
 /*dashboard.networks.getTrafficData('L_646829496481095933', { 'timespan' : 36 * 3600 })
-    .then(traffic_data => {
-      var msg = "Your network, Sandbox 2 - Las Vegas USA, has the following sites/apps in Top 10 Traffic:\n";
-      console.log("topTraffic traffic\n", traffic_data);
+  .then(traffic_data => {
+    var msg = "Your network, Sandbox 2 - Las Vegas USA, has the following sites/apps in Top 10 Traffic:\n";
+    console.log("topTraffic traffic\n", traffic_data);
 
-      var top_traffic = traffic_data
-        .slice(0, 10)
-        .map(t_data => {
-          return {
-            app: t_data.application, source: t_data.destination, time: t_data.activeTime, numClients: t_data.numClients
-          };
-        });
-        console.log(top_traffic)
-      top_traffic.sort((a, b) => a.time - b.time);
-      msg += top_traffic.map(tt => tt.source + ": " + tt.time + "hours").join('\n');
+    var top_traffic = traffic_data
+      .slice(0, 10)
+      .map(t_data => {
+        return {
+          app: t_data.application, source: t_data.destination, time: t_data.activeTime, numClients: t_data.numClients
+        };
+      });
+      console.log(top_traffic)
+    top_traffic.sort((a, b) => a.time - b.time);
+    msg += top_traffic.map(tt => tt.source + ": " + tt.time + "hours").join('\n');
 
-      console.log("topTraffic msg\n", msg);
+    console.log("topTraffic msg\n", msg);
 
-      var params = '';
+    var params = '';
 
-      var cat = [];
-      var val = [];
-      for (var i = 1; i <= 5; i++){
-        params += 'cat' + i + '=' + top_traffic[i - 1].source + '&';
-        params += 'val' + i + '=' + top_traffic[i - 1].time + '&';
-      }
+    var cat = [];
+    var val = [];
+    for (var i = 1; i <= 5; i++){
+      params += 'cat' + i + '=' + top_traffic[i - 1].source + '&';
+      params += 'val' + i + '=' + top_traffic[i - 1].time + '&';
+    }
 
-      var imageUrl = 'http://ezviz.paperplane.io/pie.html?' + params;
+    var imageUrl = 'http://ezviz.paperplane.io/pie.html?' + params;
 
-      msg += imageUrl;
-    })
-    .catch(console.log);*/
+    msg += imageUrl;
+  })
+  .catch(console.log);*/
