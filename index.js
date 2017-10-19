@@ -59,6 +59,13 @@ var actions = {
   orgsList, /*alertsList,*/ networksList, devicesList, adminsFind, topTraffic, dataUsage, blockSite
 }
 
+function defaultErrorHandler(error, res) {
+  return res.json({
+    speech: JSON.stringify(error),
+    displayText: JSON.stringify(error)
+  });
+}
+
 function orgsList(res) {
   dashboard.organizations.list()
     .then(orgs => {
@@ -71,12 +78,7 @@ function orgsList(res) {
         displayText: msg
       });
     })
-    .catch(error => {
-      return res.json({
-        speech: JSON.stringify(error),
-        displayText: JSON.stringify(error)
-      });
-    });
+    .catch(error => defaultErrorHandler(error, res));
 }
 
 /*function alertsList(res) {
@@ -121,12 +123,7 @@ function networksList(res){
         displayText: msg
       });
     })
-    .catch(error => {
-      return res.json({
-        speech: JSON.stringify(error),
-        displayText: JSON.stringify(error)
-      });
-    });
+    .catch(error => defaultErrorHandler(error, res));
 }
 
 function devicesList(res) {
@@ -141,12 +138,7 @@ function devicesList(res) {
         displayText: msg
       });
     })
-    .catch(error => {
-      return res.json({
-        speech: JSON.stringify(error),
-        displayText: JSON.stringify(error)
-      });
-    });
+    .catch(error => defaultErrorHandler(error, res));
 }
 
 function adminsFind(res) {
@@ -155,6 +147,7 @@ function adminsFind(res) {
       var msg = "Your organization, Meraki Live Sandbox, has the following admins:\n";
       console.log("adminsFinds people\n", admins);
       msg += admins.slice(0, 10).map(admin => admin.name + " - " + admin.email).join('\n');
+      msg += admins.length >= 10 ? `and ${admins.length - 10} more admins...` : "";
       console.log("adminsFind msg\n", msg);
       console.log("str length",msg.length);
       return res.json({
@@ -162,48 +155,47 @@ function adminsFind(res) {
         displayText: msg
       });
     })
-    .catch(error => {
-      return res.json({
-        speech: JSON.stringify(error),
-        displayText: JSON.stringify(error)
-      });
-    });
+    .catch(error => defaultErrorHandler(error, res));
+}
 
-  /*options.url = baseUrl + "/api/v0/organizations/549236/admins";
-  function callback(error, response, body) {
-    if (!error && response.statusCode == 200) {
-      var people = JSON.parse(body);
-      var msg = "Your organization, Meraki Live Sandbox, has the following admins:\n";
-      console.log("adminsFinds people", people);
-      var i = 0;
-      for (var x of people) {
-        if (i < 10){
-          msg += x.name + " - " + x.email + "\n";
-        }
-        else {
-          break;
-        }
-        i += 1;
+function topTraffic(res, params) {
+  dashboard.networks.getTrafficData('L_646829496481095933', { 'timespan' : params.hours * 3600 })
+    .then(traffic_data => {
+      var msg = "Your network, Sandbox 2 - Las Vegas USA, has the following sites/apps in Top 10 Traffic:\n";
+      console.log("topTraffic traffic\n", traffic_data);
+
+      var top_traffic_data = traffic_data
+        .slice(0, 10)
+        .map(t_data => {
+          return {
+            app: t_data.application, source: t_data.destination, time: t_data.activeTime, numClients: t_data.numClients
+          };
+        })
+        .sort((a, b) => a.time - b.time);
+      msg += top_traffic.map(tt => tt.source + ": " + tt.time + "hours").join('\n');
+
+      console.log("topTraffic msg\n", msg);
+
+      var params = '';
+
+      var cat = [];
+      var val = [];
+      for (var i = 1; i <= 5; i++){
+        params += 'cat' + i + '=' + top_traffic[i - 1].source + '&';
+        params += 'val' + i + '=' + top_traffic[i - 1].time + '&';
       }
-      console.log("adminsFind msg", msg);
-      console.log("str length",msg.length);
+
+      var imageUrl = 'http://ezviz.paperplane.io/pie.html?' + params;
+
+      msg += imageUrl;
+
       return res.json({
         speech: msg,
         displayText: msg
       });
-    }
-    else {
-      return res.json({
-        speech: JSON.stringify(error),
-        displayText: JSON.stringify(error)
-      });
-    }
-  }
-  request(options, callback);*/
-}
-
-function topTraffic(res, params) {
-  options.url = baseUrl + "/api/v0/networks/N_646829496481140676/traffic?timespan="+(params.hours*3600);
+    })
+    .catch(error => defaultErrorHandler(error, res));
+  /*options.url = baseUrl + "/api/v0/networks/N_646829496481140676/traffic?timespan="+(params.hours*3600);
   function callback(error, response, body) {
     if (!error && response.statusCode == 200) {
       var traffic = JSON.parse(body);
@@ -260,7 +252,7 @@ function topTraffic(res, params) {
       });
     }
   }
-  request(options, callback);
+  request(options, callback);*/
 }
 
 function dataUsage(res, params) {
