@@ -62,12 +62,9 @@ function orgsList(res) {
   dashboard.organizations.list()
     .then(orgs => {
       var msg = "You are in the following organizations:\n";
-      console.log("orgsList orgs",orgs);
+      console.log("orgsList orgs\n",orgs);
       msg += orgs.map(org => org.name).join('\n');
-      /*for (var x of orgs) {
-        msg += x.name + "\n"
-      }*/
-      console.log("orgsList msg",msg);
+      console.log("orgsList msg\n",msg);
       return res.json({
         speech: msg,
         displayText: msg
@@ -78,7 +75,7 @@ function orgsList(res) {
         speech: JSON.stringify(error),
         displayText: JSON.stringify(error)
       });
-    })
+    });
   /*options.url = baseUrl + "/api/v0/organizations";
   function callback(error, response, body) {
     if (!error && response.statusCode == 200) {
@@ -135,7 +132,28 @@ function alertsList(res) {
 }
 
 function networksList(res){
-  options.url = baseUrl + "/api/v0/organizations/549236/networks";
+  dashboard.networks.list(549236)
+    .then(networks => {
+
+    })
+    .then(networks => {
+      var msg = "Your organization has the networks:\n";
+      console.log("networksList networks\n", networks);
+      msg += networks.map(network => network.name).join('\n');
+      console.log("networksList msg\n", msg);
+      return res.json({
+        speech: msg,
+        displayText: msg
+      });
+    })
+    .catch(error => {
+      return res.json({
+        speech: JSON.stringify(error),
+        displayText: JSON.stringify(error)
+      });
+    });
+
+  /*options.url = baseUrl + "/api/v0/organizations/549236/networks";
   function callback(error, response, body) {
     if (!error && response.statusCode == 200) {
       var networks = JSON.parse(body);
@@ -157,7 +175,7 @@ function networksList(res){
       });
     }
   }
-  request(options, callback);
+  request(options, callback);*/
 }
 
 function devicesList(res) {
