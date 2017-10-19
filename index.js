@@ -134,9 +134,6 @@ function alertsList(res) {
 function networksList(res){
   dashboard.networks.list(549236)
     .then(networks => {
-
-    })
-    .then(networks => {
       var msg = "Your organization has the networks:\n";
       console.log("networksList networks\n", networks);
       msg += networks.map(network => network.name).join('\n');
