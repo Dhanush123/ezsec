@@ -3,17 +3,13 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const request = require("request");
-var TempMail = require("tempmail.js");
+const TempMail = require("tempmail.js");
+const dashboard = require('node-meraki-dashboard')('27fece4cac8304e262ee1ee81d27844096e7b2e4');
 
-const pEachSeries = require('p-each-series');
-const pMapSeries = require('p-map-series');
+const tmpEmail = "ticuleyire@p33.org";
+const account = new TempMail(tmpEmail);
 
-var tmpEmail = "juyahevah@p33.org";
-var account = new TempMail(tmpEmail);
-
-var Quiche = require('quiche');
-
-var axios = require('axios');
+const axios = require('axios');
 
 var dashboard_client = axios.create({
   baseURL: 'https://dashboard.meraki.com/api/v0/',
@@ -38,7 +34,7 @@ restService.post("/", function (req, res) {
     if (req.body) {
       var requestBody = req.body;
       var chatSource = requestBody.originalRequest.source;
-      isSpark = (chatSource == "slack");
+      isSpark = (chatSource == "spark");
       if (requestBody.result && Object.keys(requestBody.result.parameters).length == 0) {
         actions[requestBody.result.action](res);
       }
@@ -63,7 +59,27 @@ var actions = {
 }
 
 function orgsList(res) {
-  options.url = baseUrl + "/api/v0/organizations";
+  dashboard.organizations.list()
+    .then(orgs => {
+      var msg = "You are in the following organizations:\n";
+      console.log("orgsList orgs",orgs);
+      msg += orgs.map(org => org.name).join('\n');
+      /*for (var x of orgs) {
+        msg += x.name + "\n"
+      }*/
+      console.log("orgsList msg",msg);
+      return res.json({
+        speech: msg,
+        displayText: msg
+      });
+    })
+    .catch(error => {
+      return res.json({
+        speech: JSON.stringify(error),
+        displayText: JSON.stringify(error)
+      });
+    })
+  /*options.url = baseUrl + "/api/v0/organizations";
   function callback(error, response, body) {
     if (!error && response.statusCode == 200) {
       var orgs = JSON.parse(body);
@@ -85,7 +101,7 @@ function orgsList(res) {
       });
     }
   }
-  request(options, callback);
+  request(options, callback);*/
 }
 
 function alertsList(res) {

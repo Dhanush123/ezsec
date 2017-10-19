@@ -7,17 +7,15 @@
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "dhanush patel",
+  "author": "Dhanush Patel & Tejas Shah",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.18.2",
-    "express": "^4.16.1",
-    "request": "^2.83.0",
-    "jsonic": "^0.3.0",
-    "tempmail.js": "^0.2.1",
     "axios": "^0.16.2",
-    "p-each-series": "^1.0.0",
-    "p-map-series": "^1.0.0",
-    "quiche": "^0.3.0"
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "jsonic": "^0.3.0",
+    "node-meraki-dashboard": "0.0.3",
+    "request": "^2.83.0",
+    "tempmail.js": "^0.2.1"
   }
 }
