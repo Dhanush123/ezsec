@@ -4,7 +4,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const request = require("request");
 const TempMail = require("tempmail.js");
-const dashboard = require('node-meraki-dashboard')('27fece4cac8304e262ee1ee81d27844096e7b2e4');
+//27fece4cac8304e262ee1ee81d27844096e7b2e4
+const dashboard = require('node-meraki-dashboard')('c83cec6e968362a0e77d34b871a2075a1c4d6ced');
 
 const tmpEmail = "ticuleyire@p33.org";
 const account = new TempMail(tmpEmail);
@@ -13,7 +14,7 @@ const axios = require('axios');
 
 var dashboard_client = axios.create({
   baseURL: 'https://dashboard.meraki.com/api/v0/',
-  headers: {"X-Cisco-Meraki-API-Key": "27fece4cac8304e262ee1ee81d27844096e7b2e4"}
+  headers: {"X-Cisco-Meraki-API-Key": "c83cec6e968362a0e77d34b871a2075a1c4d6ced"}
 });
 
 const restService = express();
@@ -22,7 +23,7 @@ restService.use(bodyParser.json());
 const baseUrl = "https://dashboard.meraki.com";
 var options = {
   headers: {
-    "X-Cisco-Meraki-API-Key": "27fece4cac8304e262ee1ee81d27844096e7b2e4"
+    "X-Cisco-Meraki-API-Key": "c83cec6e968362a0e77d34b871a2075a1c4d6ced"
   },
 };
 
@@ -55,7 +56,7 @@ restService.post("/", function (req, res) {
 });
 
 var actions = {
-  orgsList, alertsList, networksList, devicesList, adminsFind, topTraffic, dataUsage, blockSite
+  orgsList, /*alertsList,*/ networksList, devicesList, adminsFind, topTraffic, dataUsage, blockSite
 }
 
 function orgsList(res) {
@@ -76,32 +77,9 @@ function orgsList(res) {
         displayText: JSON.stringify(error)
       });
     });
-  /*options.url = baseUrl + "/api/v0/organizations";
-  function callback(error, response, body) {
-    if (!error && response.statusCode == 200) {
-      var orgs = JSON.parse(body);
-      var msg = "You are in the following organizations:\n";
-      console.log("orgsList orgs",orgs);
-      for (var x of orgs) {
-        msg += x.name + "\n"
-      }
-      console.log("orgsList msg",msg);
-      return res.json({
-        speech: msg,
-        displayText: msg
-      });
-    }
-    else {
-      return res.json({
-        speech: JSON.stringify(error),
-        displayText: JSON.stringify(error)
-      });
-    }
-  }
-  request(options, callback);*/
 }
 
-function alertsList(res) {
+/*function alertsList(res) {
   account
     .getMail()
     .then(raw_messages => {
@@ -117,8 +95,8 @@ function alertsList(res) {
     })
     .then(msgs => {
       res.json({
-        speech: JSON.stringify(msgs/*.map(msg => msg.subject)*/, null, 2),
-        displayText: JSON.stringify(msgs/*.map(msg => msg.subject)*/, null, 2)
+        speech: JSON.stringify(msgs, null, 2),
+        displayText: JSON.stringify(msgs, null, 2)
       });
     })
     .catch(error => {
@@ -129,7 +107,7 @@ function alertsList(res) {
         }
       })
     })
-}
+}*/
 
 function networksList(res){
   dashboard.networks.list(549236)
@@ -149,34 +127,44 @@ function networksList(res){
         displayText: JSON.stringify(error)
       });
     });
+}
 
-  /*options.url = baseUrl + "/api/v0/organizations/549236/networks";
-  function callback(error, response, body) {
-    if (!error && response.statusCode == 200) {
-      var networks = JSON.parse(body);
+function devicesList(res) {
+  /*dashboard.networks.list(549236)
+    .then(networks => {
       var msg = "Your organization has the networks:\n";
-      console.log("networksList networks", networks);
-      for (var x of networks) {
-        msg += x.name + "\n"
-      }
-      console.log("networksList msg", msg);
+      console.log("networksList networks\n", networks);
+      msg += networks.map(network => network.name).join('\n');
+      console.log("networksList msg\n", msg);
       return res.json({
         speech: msg,
         displayText: msg
       });
-    }
-    else {
+    })
+    .catch(error => {
       return res.json({
         speech: JSON.stringify(error),
         displayText: JSON.stringify(error)
       });
-    }
-  }
-  request(options, callback);*/
-}
-
-function devicesList(res) {
-  options.url = baseUrl + "/api/v0/networks/N_646829496481140676/devices";
+    });*/
+  dashboard.devices.list('L_646829496481095933')
+    .then(devices => {
+      var msg = "Your network, Sandbox 2 - Las Vegas USA, has these devices:\n";
+      console.log("devicesList devices\n", devices);
+      msg += devices.map(device => device.name || device.model).join('\n');
+      console.log("devicesList msg\n", msg);
+      return res.json({
+        speech: msg,
+        displayText: msg
+      });
+    })
+    .catch(error => {
+      return res.json({
+        speech: JSON.stringify(error),
+        displayText: JSON.stringify(error)
+      });
+    });
+  /*options.url = baseUrl + "/api/v0/networks/N_646829496481140676/devices";
   function callback(error, response, body) {
     if (!error && response.statusCode == 200) {
       var devices = JSON.parse(body);
@@ -199,7 +187,7 @@ function devicesList(res) {
       });
     }
   }
-  request(options, callback);
+  request(options, callback);*/
 }
 
 function adminsFind(res) {
