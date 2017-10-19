@@ -30,10 +30,11 @@ var options = {
 var isSpark = false;
 
 restService.post("/", function (req, res) {
-  console.log("hook request");
+  console.log("webhook request");
   try {
     if (req.body) {
       var requestBody = req.body;
+      console.log(JSON.stringify(requestBody, null, 2))
       var chatSource = requestBody.originalRequest.source;
       isSpark = (chatSource == "spark");
       if (requestBody.result && Object.keys(requestBody.result.parameters).length == 0) {
@@ -42,6 +43,16 @@ restService.post("/", function (req, res) {
       else { //requestBody.result probably there, deals w/ params here
         actions[requestBody.result.action](res, requestBody.result.parameters);
       }
+      console.log("end webhook request");
+    } else {
+      var errMsg = "req.body is missing!";
+      console.error("Cannot process request", errMsg);
+      return res.status(400).json({
+        status: {
+          code: 400,
+          errorType: errMsg
+        }
+      });
     }
   }
   catch (err) {
@@ -186,14 +197,8 @@ function topTraffic(res, params) {
 
       console.log("topTraffic msg\n", msg);
 
-      var params = '';
-
-      var cat = [];
-      var val = [];
-      for (var i = 1; i <= 5; i++){
-        params += 'cat' + i + '=' + top_traffic[i - 1].source + '&';
-        params += 'val' + i + '=' + top_traffic[i - 1].time + '&';
-      }
+      var i = 0;
+      var params = top_traffic.slice(0, 5).map(tt => 'cat' + ++i + '=' + tt.source + '&val' + i + '=' + tt.time + '&').join('\n');
 
       var imageUrl = 'http://ezviz.paperplane.io/pie.html?' + params;
 
