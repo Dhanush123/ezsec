@@ -17,8 +17,8 @@ var dashboard_client = axios.create({
   headers: {"X-Cisco-Meraki-API-Key": "c83cec6e968362a0e77d34b871a2075a1c4d6ced"}
 });
 
-const restService = express();
-restService.use(bodyParser.json());
+const botServer = express();
+botServer.use(bodyParser.json());
 
 const baseUrl = "https://dashboard.meraki.com";
 var options = {
@@ -29,7 +29,7 @@ var options = {
 
 var isSpark = false;
 
-restService.post("/", function (req, res) {
+botServer.post("/chat", function (req, res) {
   console.log("webhook request");
   try {
     if (req.body) {
@@ -359,7 +359,7 @@ function blockSite(rez, params) {
   });
 }
 
-restService.listen((process.env.PORT || 8000), function () {
+botServer.listen((process.env.PORT || 8000), function () {
   console.log("Server listening");
 });
 
