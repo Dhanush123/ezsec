@@ -212,20 +212,18 @@ function topTraffic(res, params) {
         title: "Top 10 sites/apps in traffic usage!"
       };
 
-      const plot_promise = util.promisify(plotly.plot);
-
       var data = [{x:[0,1,2], y:[3,2,1], type: 'bar'}];
       var graphOptions = {fileopt : "extend", filename : "nodenodenode"};
 
-      return plot_promise(data, graphOptions)
-        .then(_msg => {
-          msg += "\n" + _msg.url;
-          console.log(_msg);
-          return res.json({
-            speech: msg,
-            displayText: msg
-          });
+      plotly.plot(data, graphOptions, (err, _msg) => {
+        msg += "\n" + _msg.url;
+        console.log('msg', msg);
+        console.log('_msg', _msg);
+        return res.json({
+          speech: msg,
+          displayText: msg
         });
+      })
 
 
       /*return Plotly.newPlot('top_traffic_div', data, layout)
