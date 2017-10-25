@@ -200,7 +200,7 @@ function topTraffic(res, params) {
       var i = 0;
       var params = top_traffic.slice(0, 5).map(tt => 'cat' + ++i + '=' + tt.source + '&val' + i + '=' + tt.time + '&').join('\n');
 
-      var imageUrl = 'http://ezviz.paperplane.io/pie.html?' + params;
+      var imageUrl = '\nhttp://ezviz.paperplane.io/pie.html?' + params;
 
       msg += imageUrl;
 
