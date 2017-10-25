@@ -250,7 +250,7 @@ function topTraffic(res, params) {
 
         return res.json({
           speech: msg,
-          displayText: msg
+          displayText: msg,
           data: {
             text: msg,
             files: ['https://ezsec.herokuapp.com/charts/' + fileName]
