@@ -21,6 +21,7 @@ var dashboard_client = axios.create({
 
 const botServer = express();
 botServer.use(bodyParser.json());
+botServer.use(express.static('charts'))
 
 const baseUrl = "https://dashboard.meraki.com";
 var options = {
@@ -200,7 +201,7 @@ function topTraffic(res, params) {
 
       console.log("topTraffic msg\n", msg);
 
-      var data = [{
+      /*var data = [{
         values: top_traffic.map(tt => tt.time),
         labels: top_traffic.map(tt => tt.source),
         type: 'pie'
@@ -210,12 +211,12 @@ function topTraffic(res, params) {
         height: 500,
         width: 500,
         title: "Top 10 sites/apps in traffic usage!"
-      };
+      };*/
 
-      var data = [{x:[0,1,2], y:[3,2,1], type: 'bar'}];
-      var graphOptions = {fileopt : "extend", filename : "nodenodenode"};
+      //var data = [{x:[0,1,2], y:[3,2,1], type: 'bar'}];
+      //var graphOptions = {fileopt : "extend", filename : "nodenodenode"};
 
-      plotly.plot(data, graphOptions, (err, _msg) => {
+      /*plotly.plot(data, graphOptions, (err, _msg) => {
         msg += "\n" + _msg.url;
         console.log('msg', msg);
         console.log('_msg', _msg);
@@ -223,18 +224,39 @@ function topTraffic(res, params) {
           speech: msg,
           displayText: msg
         });
-      })
+      })*/
 
+      var trace = {
+        values: top_traffic.map(tt => tt.time),
+        labels: top_traffic.map(tt => tt.source),
+        type: 'pie'
+      };
 
-      /*return Plotly.newPlot('top_traffic_div', data, layout)
-        */
+      var figure = { 'data': [trace] };
 
-      /*var i = 0;
-      var params = top_traffic.slice(0, 5).map(tt => 'cat' + ++i + '=' + tt.source + '&val' + i + '=' + tt.time + '&').join('');
+      var imgOpts = {
+        format: 'png',
+        width: 500,
+        height: 500,
+        //title: "Top 10 sites/apps in traffic usage!"
+      };
 
-      var imageUrl = '\nhttp://ezviz.paperplane.io/pie.html?' + params;
+      plotly.getImage(figure, imgOpts, function (error, imageStream) {
+        if (error) return console.log (error);
 
-      msg += imageUrl;*/
+        var fileName = `chart-${Date.now()}.png`;
+        var fileStream = fs.createWriteStream(fileName);
+        imageStream.pipe(fileStream);
+
+        return res.json({
+          speech: msg,
+          displayText: msg
+          data: {
+            text: msg,
+            files: ['https://ezsec.herokuapp.com/' + fileName]
+          }
+        });
+      });
     })
     .catch(error => defaultErrorHandler(error, res));
   /*options.url = baseUrl + "/api/v0/networks/L_646829496481095933/traffic?timespan="+(params.hours*3600);
