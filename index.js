@@ -4,6 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const request = require("request");
 const TempMail = require("tempmail.js");
+var Plotly = require('plotly.js');
 //27fece4cac8304e262ee1ee81d27844096e7b2e4
 const dashboard = require('node-meraki-dashboard')('c83cec6e968362a0e77d34b871a2075a1c4d6ced');
 
@@ -170,7 +171,8 @@ function adminsFind(res) {
 }
 
 function topTraffic(res, params) {
-  dashboard.networks.getTrafficData('L_646829496481095933', { 'timespan' : params.hours * 3600 })
+  dashboard.networks
+    .getTrafficData('L_646829496481095933', { 'timespan' : params.hours * 3600 })
     .then(traffic_data => {
       var msg;
 
@@ -197,17 +199,33 @@ function topTraffic(res, params) {
 
       console.log("topTraffic msg\n", msg);
 
-      var i = 0;
+      var data = [{
+        values: top_traffic.map(tt => tt.time),
+        labels: top_traffic.map(tt => tt.source),
+        type: 'pie'
+      }];
+
+      var layout = {
+        height: 500,
+        width: 500,
+        title: "Top 10 sites/apps in traffic usage!"
+      };
+
+      return Plotly.newPlot('top_traffic_div', data, layout)
+        .then(url => {
+          msg += "\n" + url;
+          return res.json({
+            speech: msg,
+            displayText: msg
+          });
+        })
+
+      /*var i = 0;
       var params = top_traffic.slice(0, 5).map(tt => 'cat' + ++i + '=' + tt.source + '&val' + i + '=' + tt.time + '&').join('');
 
       var imageUrl = '\nhttp://ezviz.paperplane.io/pie.html?' + params;
 
-      msg += imageUrl;
-
-      return res.json({
-        speech: msg,
-        displayText: msg
-      });
+      msg += imageUrl;*/
     })
     .catch(error => defaultErrorHandler(error, res));
   /*options.url = baseUrl + "/api/v0/networks/L_646829496481095933/traffic?timespan="+(params.hours*3600);
