@@ -5,7 +5,8 @@ const bodyParser = require("body-parser");
 const request = require("request");
 const TempMail = require("tempmail.js");
 const fs = require('fs');
-var plotly = require('plotly')('tejashah88', 'khx6HTKAGtl7steE1hyh');
+var randomColor = require('randomcolor');
+var quiche = require('quiche');
 //27fece4cac8304e262ee1ee81d27844096e7b2e4
 const dashboard = require('node-meraki-dashboard')('c83cec6e968362a0e77d34b871a2075a1c4d6ced');
 
@@ -172,71 +173,6 @@ function adminsFind(res) {
     .catch(error => defaultErrorHandler(error, res));
 }
 
-function topTrafficOffline() {
-  dashboard.networks
-    .getTrafficData('L_646829496481095933', { 'timespan' : 72 * 3600 })
-    .then(traffic_data => {
-      var msg;
-
-      if (traffic_data.length === 0) {
-        msg = "It looks like no traffic data has been found!"
-        return res.json({
-          speech: msg,
-          displayText: msg
-        });
-      }
-
-      msg = "Your network, Sandbox 2 - Las Vegas USA, has the following sites/apps in Top 10 Traffic:\n";
-      console.log("topTraffic traffic\n", traffic_data);
-
-      var top_traffic = traffic_data
-        .slice(0, 10)
-        .map(t_data => {
-          return {
-            app: t_data.application, source: t_data.destination, time: t_data.activeTime, numClients: t_data.numClients
-          };
-        })
-        .sort((a, b) => a.time - b.time);
-      msg += top_traffic.map(tt => tt.source + ": " + tt.time + " hours").join('\n');
-
-      console.log("topTraffic msg\n", msg);
-
-      var data = [{
-        values: top_traffic.map(tt => tt.time),
-        labels: top_traffic.map(tt => tt.source),
-        type: 'pie'
-      }];
-
-      var layout = {
-        height: 500,
-        width: 500,
-        title: "Top 10 sites/apps in traffic usage!",
-        fileopt : "extend",
-        filename : "chart-" + Date.now()
-      };
-
-      //var data = [{x:[0,1,2], y:[3,2,1], type: 'bar'}];
-      var graphOptions = {};
-
-      plotly.plot(data, graphOptions, (err, _msg) => {
-        msg += "\n" + _msg.url + '.png';
-        console.log('msg', msg);
-        console.log('_msg', _msg);
-        console.log({
-          speech: msg,
-          //displayText: msg,
-          data: {
-            text: msg,
-            files: [_msg.url + '.png']
-          }
-        })
-      })
-    })
-    .catch(error => console.log(error));
-}
-
-//topTrafficOffline();
-
 function topTraffic(res, params) {
   dashboard.networks
     .getTrafficData('L_646829496481095933', { 'timespan' : params.hours * 3600 })
@@ -266,150 +202,24 @@ function topTraffic(res, params) {
 
       console.log("topTraffic msg\n", msg);
 
-      var data = [{
-        values: top_traffic.map(tt => tt.time),
-        labels: top_traffic.map(tt => tt.source),
-        type: 'pie'
-      }];
-
-      var layout = {
-        height: 500,
-        width: 500,
-        title: "Top 10 sites/apps in traffic usage!",
-        xaxis: {
-          title: 'Year',
-          showgrid: false,
-          zeroline: false
-        },
-        yaxis: {
-          title: 'Percent',
-          showline: false
-        },
-        fileopt : "extend",
-        filename : "nodenodenode"
-      };
-
-      //var data = [{x:[0,1,2], y:[3,2,1], type: 'bar'}];
-      var graphOptions = {};
-
-      plotly.plot(data, graphOptions, (err, _msg) => {
-        msg += "\n" + _msg.url + '.png';
-        console.log('msg', msg);
-        console.log('_msg', _msg);
-        return res.json({
-          speech: msg,
-          //displayText: msg,
-          data: {
-            text: msg,
-            files: [_msg.url + '.png']
-          }
-        });
-      })
-
-      /*var trace = {
-        values: top_traffic.map(tt => tt.time),
-        labels: top_traffic.map(tt => tt.source),
-        type: 'pie'
-      };
-
-      var figure = { 'data': [trace] };
-
-      var imgOpts = {
-        format: 'png',
-        width: 500,
-        height: 500,
-        //title: "Top 10 sites/apps in traffic usage!"
-      };*/
-
-      /*plotly.getImage(figure, imgOpts, function (error, imageStream) {
-        console.log('getImage');
-        if (error) return console.log (error);
-
-        axios({
-          method:'post',
-          url:'http://uploads.im/api?upload',
-          data: {
-            firstName: 'Fred'
-          },
-          responseType:'stream'
-        })
-        .then(function(response) {
-          console.log(response.data)
-        });
-
-        var fileName = `chart-${Date.now()}.png`;
-        var fileStream = fs.createWriteStream(fileName);
-        imageStream.pipe(fileStream);
-        console.log('https://ezsec.herokuapp.com/charts/' + fileName);
-        return res.json({
-          speech: msg,
-          //displayText: msg,
-          data: {
-            text: msg,
-            files: ['https://ezsec.herokuapp.com/charts/' + fileName]
-          }
-        });
-      });*/
-    })
-    .catch(error => defaultErrorHandler(error, res));
-  /*options.url = baseUrl + "/api/v0/networks/L_646829496481095933/traffic?timespan="+(params.hours*3600);
-  function callback(error, response, body) {
-    if (!error && response.statusCode == 200) {
-      var traffic = JSON.parse(body);
-      var top_traffic = []
-      var msg = "Your network, Cal Hackz - wireless, has the following sites/apps in Top 10 Traffic:\n";
-      console.log("topTraffic traffic", traffic);
-      for (var x of traffic) {
-        if (top_traffic.length < 10) {
-          top_traffic.push({ app: x.application, source: x.destination, time: x.activeTime, numClients: x.numClients });
-        }
-        else {
-          for (var i = 0; i < top_traffic.length; i++){
-            if (x.activeTime > top_traffic[i].activeTime) {
-              top_traffic[i] = { app: x.application, source: x.destination, time: x.activeTime, numClients: x.numClients };
-              break;
-            }
-          }
-        }
+      var pie = new Quiche('pie');
+      pie.setTransparentBackground(); // Make background transparent
+      for (var tt of top_traffic) {
+        pie.addData(tt.time, tt.source, randomColor())
       }
-
-      function compare(a, b) {
-        return a.time - b.time;
-      }
-      top_traffic.sort(compare);
-
-      for (var i = 0; i < top_traffic.length; i++){
-        msg += top_traffic[i].source + ": " + top_traffic[i].time + " hours\n";
-      }
-
-      console.log("topTraffic msg", msg);
-
-      var params = '';
-
-      var cat = [];
-      var val = [];
-      for (var i = 1; i <= 5; i++){
-        params += 'cat' + i + '=' + top_traffic[i - 1].source + '&';
-        params += 'val' + i + '=' + top_traffic[i - 1].time + '&';
-      }
-
-      var imageUrl = 'http://ezviz.paperplane.io/pie.html?' + params;
-
-      msg += imageUrl;
+      pie.setLabel(top_traffic.map(tt => tt.source)); // Add labels to pie segments
+      var imageUrl = pie.getUrl(true); // First param controls http vs. https
 
       return res.json({
         speech: msg,
-        displayText: msg
+        displayText: msg,
+        data: {
+          text: msg,
+          files: [imageUrl]
+        }
       });
-    }
-    else {
-      return res.json({
-        speech: JSON.stringify(error),
-        displayText: JSON.stringify(error)
-      });
-    }
-  }
-  request(options, callback);*/
+    })
+    .catch(error => defaultErrorHandler(error, res));
 }
 
 function dataUsage(res, params) {

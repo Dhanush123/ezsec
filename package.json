@@ -15,8 +15,8 @@
     "express": "^4.16.2",
     "jsonic": "^0.3.0",
     "node-meraki-dashboard": "0.0.3",
-    "plotly": "^1.0.6",
-    "plotly.js": "^1.31.2",
+    "quiche": "^0.3.0",
+    "randomcolor": "^0.5.3",
     "request": "^2.83.0",
     "tempmail.js": "^0.2.1"
   }
