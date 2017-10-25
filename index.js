@@ -4,7 +4,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const request = require("request");
 const TempMail = require("tempmail.js");
-var Plotly = require('plotly.js');
+const util = require('util');
+var plotly = require('plotly')('tejashah88', 'khx6HTKAGtl7steE1hyh');
 //27fece4cac8304e262ee1ee81d27844096e7b2e4
 const dashboard = require('node-meraki-dashboard')('c83cec6e968362a0e77d34b871a2075a1c4d6ced');
 
@@ -211,14 +212,23 @@ function topTraffic(res, params) {
         title: "Top 10 sites/apps in traffic usage!"
       };
 
-      return Plotly.newPlot('top_traffic_div', data, layout)
-        .then(url => {
-          msg += "\n" + url;
+      const plot_promise = util.promisify(plotly.plot);
+
+      var data = [{x:[0,1,2], y:[3,2,1], type: 'bar'}];
+      var graphOptions = {fileopt : "extend", filename : "nodenodenode"};
+
+      return plot_promise(data, graphOptions)
+        .then(_msg => {
+          msg += "\n" + _msg.url;
           return res.json({
             speech: msg,
             displayText: msg
           });
-        })
+        });
+
+
+      /*return Plotly.newPlot('top_traffic_div', data, layout)
+        */
 
       /*var i = 0;
       var params = top_traffic.slice(0, 5).map(tt => 'cat' + ++i + '=' + tt.source + '&val' + i + '=' + tt.time + '&').join('');
