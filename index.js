@@ -242,6 +242,7 @@ function topTraffic(res, params) {
       };
 
       plotly.getImage(figure, imgOpts, function (error, imageStream) {
+        console.log('getImage');
         if (error) return console.log (error);
 
         var fileName = `chart-${Date.now()}.png`;
