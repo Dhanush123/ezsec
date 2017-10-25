@@ -247,10 +247,10 @@ function topTraffic(res, params) {
         var fileName = `chart-${Date.now()}.png`;
         var fileStream = fs.createWriteStream(fileName);
         imageStream.pipe(fileStream);
-
+        console.log('https://ezsec.herokuapp.com/charts/' + fileName);
         return res.json({
           speech: msg,
-          displayText: msg,
+          //displayText: msg,
           data: {
             text: msg,
             files: ['https://ezsec.herokuapp.com/charts/' + fileName]
