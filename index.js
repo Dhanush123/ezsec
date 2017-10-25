@@ -202,6 +202,7 @@ function topTraffic(res, params) {
 
       console.log("topTraffic msg\n", msg);
 
+      console.log('test');
       var pie = new Quiche('pie');
       console.log('test');
       pie.setTransparentBackground(); // Make background transparent
