@@ -210,16 +210,18 @@ function topTraffic(res, params) {
       pie.setLabel(top_traffic.map(tt => tt.source)); // Add labels to pie segments
       var imageUrl = pie.getUrl(true); // First param controls http vs. https
       console.log({
-        speech: msg,
+        //speech: msg,
         //displayText: msg,
+        source: "spark",
         data: {
           text: msg,
           files: [imageUrl]
         }
       })
       return res.json({
-        speech: msg,
+        //speech: msg,
         //displayText: msg,
+        source: "spark",
         data: {
           text: msg,
           files: [imageUrl]
