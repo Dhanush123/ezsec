@@ -211,7 +211,7 @@ function topTraffic(res, params) {
       var imageUrl = pie.getUrl(true); // First param controls http vs. https
       console.log({
         speech: msg,
-        displayText: msg,
+        //displayText: msg,
         data: {
           text: msg,
           files: [imageUrl]
@@ -219,7 +219,7 @@ function topTraffic(res, params) {
       })
       return res.json({
         speech: msg,
-        displayText: msg,
+        //displayText: msg,
         data: {
           text: msg,
           files: [imageUrl]
