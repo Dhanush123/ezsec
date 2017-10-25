@@ -203,11 +203,15 @@ function topTraffic(res, params) {
       console.log("topTraffic msg\n", msg);
 
       var pie = new Quiche('pie');
+      console.log('test');
       pie.setTransparentBackground(); // Make background transparent
+      console.log('test');
       for (var tt of top_traffic) {
         pie.addData(tt.time, tt.source, randomColor())
       }
+      console.log('test');
       pie.setLabel(top_traffic.map(tt => tt.source)); // Add labels to pie segments
+      console.log('test');
       var imageUrl = pie.getUrl(true); // First param controls http vs. https
       console.log({
         speech: msg,
