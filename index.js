@@ -198,7 +198,7 @@ function topTraffic(res, params) {
       console.log("topTraffic msg\n", msg);
 
       var i = 0;
-      var params = top_traffic.slice(0, 6).map(tt => 'cat' + ++i + '=' + tt.source + '&val' + i + '=' + tt.time + '&').join('\n');
+      var params = top_traffic.slice(0, 5).map(tt => 'cat' + ++i + '=' + tt.source + '&val' + i + '=' + tt.time + '&').join('');
 
       var imageUrl = '\nhttp://ezviz.paperplane.io/pie.html?' + params;
 
