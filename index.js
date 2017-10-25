@@ -212,7 +212,7 @@ function topTrafficOffline() {
         width: 500,
         title: "Top 10 sites/apps in traffic usage!",
         fileopt : "extend",
-        filename : "chart"
+        filename : "chart-" + Date.now()
       };
 
       //var data = [{x:[0,1,2], y:[3,2,1], type: 'bar'}];
@@ -224,7 +224,7 @@ function topTrafficOffline() {
         console.log('_msg', _msg);
         console.log({
           speech: msg,
-          displayText: msg,
+          //displayText: msg,
           data: {
             text: msg,
             files: [_msg.url + '.png']
@@ -235,7 +235,7 @@ function topTrafficOffline() {
     .catch(error => console.log(error));
 }
 
-topTrafficOffline();
+//topTrafficOffline();
 
 function topTraffic(res, params) {
   dashboard.networks
