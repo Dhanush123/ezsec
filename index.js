@@ -220,6 +220,7 @@ function topTraffic(res, params) {
       return plot_promise(data, graphOptions)
         .then(_msg => {
           msg += "\n" + _msg.url;
+          console.log(msg);
           return res.json({
             speech: msg,
             displayText: msg
