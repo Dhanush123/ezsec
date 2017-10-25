@@ -253,7 +253,7 @@ function topTraffic(res, params) {
           displayText: msg
           data: {
             text: msg,
-            files: ['https://ezsec.herokuapp.com/' + fileName]
+            files: ['https://ezsec.herokuapp.com/charts/' + fileName]
           }
         });
       });
