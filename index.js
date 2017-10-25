@@ -172,6 +172,71 @@ function adminsFind(res) {
     .catch(error => defaultErrorHandler(error, res));
 }
 
+function topTrafficOffline() {
+  dashboard.networks
+    .getTrafficData('L_646829496481095933', { 'timespan' : 72 * 3600 })
+    .then(traffic_data => {
+      var msg;
+
+      if (traffic_data.length === 0) {
+        msg = "It looks like no traffic data has been found!"
+        return res.json({
+          speech: msg,
+          displayText: msg
+        });
+      }
+
+      msg = "Your network, Sandbox 2 - Las Vegas USA, has the following sites/apps in Top 10 Traffic:\n";
+      console.log("topTraffic traffic\n", traffic_data);
+
+      var top_traffic = traffic_data
+        .slice(0, 10)
+        .map(t_data => {
+          return {
+            app: t_data.application, source: t_data.destination, time: t_data.activeTime, numClients: t_data.numClients
+          };
+        })
+        .sort((a, b) => a.time - b.time);
+      msg += top_traffic.map(tt => tt.source + ": " + tt.time + " hours").join('\n');
+
+      console.log("topTraffic msg\n", msg);
+
+      var data = [{
+        values: top_traffic.map(tt => tt.time),
+        labels: top_traffic.map(tt => tt.source),
+        type: 'pie'
+      }];
+
+      var layout = {
+        height: 500,
+        width: 500,
+        title: "Top 10 sites/apps in traffic usage!",
+        fileopt : "extend",
+        filename : "chart"
+      };
+
+      //var data = [{x:[0,1,2], y:[3,2,1], type: 'bar'}];
+      var graphOptions = {};
+
+      plotly.plot(data, graphOptions, (err, _msg) => {
+        msg += "\n" + _msg.url + '.png';
+        console.log('msg', msg);
+        console.log('_msg', _msg);
+        console.log({
+          speech: msg,
+          displayText: msg,
+          data: {
+            text: msg,
+            files: [_msg.url + '.png']
+          }
+        })
+      })
+    })
+    .catch(error => console.log(error));
+}
+
+topTrafficOffline();
+
 function topTraffic(res, params) {
   dashboard.networks
     .getTrafficData('L_646829496481095933', { 'timespan' : params.hours * 3600 })
@@ -197,7 +262,7 @@ function topTraffic(res, params) {
           };
         })
         .sort((a, b) => a.time - b.time);
-      msg += top_traffic.map(tt => tt.source + ": " + tt.time + "hours").join('\n');
+      msg += top_traffic.map(tt => tt.source + ": " + tt.time + " hours").join('\n');
 
       console.log("topTraffic msg\n", msg);
 
@@ -210,11 +275,22 @@ function topTraffic(res, params) {
       var layout = {
         height: 500,
         width: 500,
-        title: "Top 10 sites/apps in traffic usage!"
+        title: "Top 10 sites/apps in traffic usage!",
+        xaxis: {
+          title: 'Year',
+          showgrid: false,
+          zeroline: false
+        },
+        yaxis: {
+          title: 'Percent',
+          showline: false
+        },
+        fileopt : "extend",
+        filename : "nodenodenode"
       };
 
       //var data = [{x:[0,1,2], y:[3,2,1], type: 'bar'}];
-      var graphOptions = {fileopt : "extend", filename : "nodenodenode"};
+      var graphOptions = {};
 
       plotly.plot(data, graphOptions, (err, _msg) => {
         msg += "\n" + _msg.url + '.png';
