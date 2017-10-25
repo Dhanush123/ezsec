@@ -201,7 +201,7 @@ function topTraffic(res, params) {
 
       console.log("topTraffic msg\n", msg);
 
-      /*var data = [{
+      var data = [{
         values: top_traffic.map(tt => tt.time),
         labels: top_traffic.map(tt => tt.source),
         type: 'pie'
@@ -211,22 +211,26 @@ function topTraffic(res, params) {
         height: 500,
         width: 500,
         title: "Top 10 sites/apps in traffic usage!"
-      };*/
+      };
 
       //var data = [{x:[0,1,2], y:[3,2,1], type: 'bar'}];
-      //var graphOptions = {fileopt : "extend", filename : "nodenodenode"};
+      var graphOptions = {fileopt : "extend", filename : "nodenodenode"};
 
-      /*plotly.plot(data, graphOptions, (err, _msg) => {
-        msg += "\n" + _msg.url;
+      plotly.plot(data, graphOptions, (err, _msg) => {
+        msg += "\n" + _msg.url + '.png';
         console.log('msg', msg);
         console.log('_msg', _msg);
         return res.json({
           speech: msg,
-          displayText: msg
+          //displayText: msg,
+          data: {
+            text: msg,
+            files: [_msg.url + '.png']
+          }
         });
-      })*/
+      })
 
-      var trace = {
+      /*var trace = {
         values: top_traffic.map(tt => tt.time),
         labels: top_traffic.map(tt => tt.source),
         type: 'pie'
@@ -239,11 +243,23 @@ function topTraffic(res, params) {
         width: 500,
         height: 500,
         //title: "Top 10 sites/apps in traffic usage!"
-      };
+      };*/
 
-      plotly.getImage(figure, imgOpts, function (error, imageStream) {
+      /*plotly.getImage(figure, imgOpts, function (error, imageStream) {
         console.log('getImage');
         if (error) return console.log (error);
+
+        axios({
+          method:'post',
+          url:'http://uploads.im/api?upload',
+          data: {
+            firstName: 'Fred'
+          },
+          responseType:'stream'
+        })
+        .then(function(response) {
+          console.log(response.data)
+        });
 
         var fileName = `chart-${Date.now()}.png`;
         var fileStream = fs.createWriteStream(fileName);
@@ -257,7 +273,7 @@ function topTraffic(res, params) {
             files: ['https://ezsec.herokuapp.com/charts/' + fileName]
           }
         });
-      });
+      });*/
     })
     .catch(error => defaultErrorHandler(error, res));
   /*options.url = baseUrl + "/api/v0/networks/L_646829496481095933/traffic?timespan="+(params.hours*3600);
