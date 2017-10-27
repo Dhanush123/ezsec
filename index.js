@@ -179,6 +179,7 @@ function topTraffic(res, params) {
   dashboard.networks
     .getTrafficData('L_646829496481095933', { 'timespan' : params.hours * 3600 })
     .then(traffic_data => {
+      console.log('test')
       var msg;
 
       if (traffic_data.length === 0) {
@@ -211,11 +212,6 @@ function topTraffic(res, params) {
       }
       pie.setLabel(top_traffic.map(tt => tt.source)); // Add labels to pie segments
       var imageUrl = pie.getUrl(true); // First param controls http vs. https
-      console.log({
-        speech: msg,
-        displayText: msg,
-        imageUrl: imageUrl
-      })
       return res.json({
         speech: msg,
         displayText: msg,
