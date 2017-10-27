@@ -33,8 +33,6 @@ var options = {
 
 var isSpark = false;
 
-var supportedSources = ['']
-
 botServer.post("/chat", function (req, res) {
   console.log("webhook request");
   try {
@@ -218,7 +216,7 @@ function topTraffic(res, params) {
         imageUrl: imageUrl
       });
     })
-    .catch(error => defaultErrorHandler(error, res));
+    .catch(console.log);
 }
 
 function dataUsage(res, params) {
