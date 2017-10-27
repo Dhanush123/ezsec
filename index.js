@@ -42,9 +42,11 @@ botServer.post("/chat", function (req, res) {
       var chatSource = requestBody.originalRequest.source;
       isSpark = (chatSource == "spark");
       if (requestBody.result && Object.keys(requestBody.result.parameters).length == 0) {
+        console.log('hell yea')
         actions[requestBody.result.action](res);
       }
       else { //requestBody.result probably there, deals w/ params here
+        console.log('hell yea more')
         actions[requestBody.result.action](res, requestBody.result.parameters);
       }
       console.log("end webhook request");
