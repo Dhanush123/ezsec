@@ -8,7 +8,7 @@ const fs = require("fs");
 var randomColor = require("randomcolor");
 var quiche = require("quiche");
 //27fece4cac8304e262ee1ee81d27844096e7b2e4
-const dashboard = require("node-meraki-dashboard")('c83cec6e968362a0e77d34b871a2075a1c4d6ced');
+const dashboard = require("node-meraki-dashboard")('d64f03732f03e0a4dd68f8a1e8ecdcb5fb1fa2aa');
 
 const tmpEmail = "ticuleyire@p33.org";
 const account = new TempMail(tmpEmail);
@@ -17,7 +17,7 @@ const axios = require('axios');
 
 var dashboard_client = axios.create({
   baseURL: 'https://dashboard.meraki.com/api/v0/',
-  headers: {"X-Cisco-Meraki-API-Key": "c83cec6e968362a0e77d34b871a2075a1c4d6ced"}
+  headers: {"X-Cisco-Meraki-API-Key": "d64f03732f03e0a4dd68f8a1e8ecdcb5fb1fa2aa"}
 });
 
 const botServer = express();
@@ -27,7 +27,7 @@ botServer.use(express.static('charts'))
 const baseUrl = "https://dashboard.meraki.com";
 var options = {
   headers: {
-    "X-Cisco-Meraki-API-Key": "c83cec6e968362a0e77d34b871a2075a1c4d6ced"
+    "X-Cisco-Meraki-API-Key": "d64f03732f03e0a4dd68f8a1e8ecdcb5fb1fa2aa"
   },
 };
 
@@ -218,7 +218,7 @@ function topTraffic(res, params) {
         imageUrl: imageUrl
       });
     })
-    .catch(console.log);
+    .catch(error => defaultErrorHandler(error, res));
 }
 
 function dataUsage(res, params) {
