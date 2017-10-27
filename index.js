@@ -4,11 +4,11 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const request = require("request");
 const TempMail = require("tempmail.js");
-const fs = require('fs');
-var randomColor = require('randomcolor');
-var quiche = require('quiche');
+const fs = require("fs");
+var randomColor = require("randomcolor");
+var quiche = require("quiche");
 //27fece4cac8304e262ee1ee81d27844096e7b2e4
-const dashboard = require('node-meraki-dashboard')('c83cec6e968362a0e77d34b871a2075a1c4d6ced');
+const dashboard = require("node-meraki-dashboard")('c83cec6e968362a0e77d34b871a2075a1c4d6ced');
 
 const tmpEmail = "ticuleyire@p33.org";
 const account = new TempMail(tmpEmail);
@@ -32,6 +32,8 @@ var options = {
 };
 
 var isSpark = false;
+
+var supportedSources = ['']
 
 botServer.post("/chat", function (req, res) {
   console.log("webhook request");
@@ -210,22 +212,14 @@ function topTraffic(res, params) {
       pie.setLabel(top_traffic.map(tt => tt.source)); // Add labels to pie segments
       var imageUrl = pie.getUrl(true); // First param controls http vs. https
       console.log({
-        //speech: msg,
-        //displayText: msg,
-        source: "spark",
-        data: {
-          text: msg,
-          files: [imageUrl]
-        }
+        speech: msg,
+        displayText: msg,
+        imageUrl: imageUrl
       })
       return res.json({
-        //speech: msg,
-        //displayText: msg,
-        source: "spark",
-        data: {
-          text: msg,
-          files: [imageUrl]
-        }
+        speech: msg,
+        displayText: msg,
+        imageUrl: imageUrl
       });
     })
     .catch(error => defaultErrorHandler(error, res));
