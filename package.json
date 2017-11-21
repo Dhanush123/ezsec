@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^0.16.2",
     "body-parser": "^1.18.2",
+    "ciscospark": "^1.15.0",
     "express": "^4.16.2",
     "jsonic": "^0.3.0",
     "node-meraki-dashboard": "0.0.3",
